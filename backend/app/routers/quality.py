@@ -3,7 +3,7 @@ from sqlalchemy.orm import Session
 import cv2
 import numpy as np
 from app.database import get_db
-from app.models.surplus import SurplusEvent
+from app.models.rescue import RescueEvent
 from typing import Optional
 from pydantic import BaseModel
 
@@ -13,12 +13,12 @@ class QualityAnalysisResponse(BaseModel):
     score: int
     category: str
     reason: str
-    updated_surplus_id: Optional[int] = None
+    updated_rescue_id: Optional[int] = None
 
 @router.post("/analyze", response_model=QualityAnalysisResponse)
 async def analyze_quality(
     image: UploadFile = File(...),
-    surplus_event_id: Optional[int] = Form(None),
+    rescue_event_id: Optional[int] = Form(None),
     db: Session = Depends(get_db)
 ):
     # Read image
@@ -66,18 +66,18 @@ async def analyze_quality(
         category = "Spoiled"
         reason = "Significant dark spots and degradation detected."
 
-    # Link to surplus
-    if surplus_event_id:
-        surplus = db.query(SurplusEvent).filter(SurplusEvent.id == surplus_event_id).first()
-        if surplus:
+    # Link to rescue
+    if rescue_event_id:
+        rescue = db.query(RescueEvent).filter(RescueEvent.id == rescue_event_id).first()
+        if rescue:
             if category == "Near-Spoilage" or category == "Spoiled":
-                surplus.urgency_level = "HIGH"
-                surplus.notes = f"Quality Check: {category} (Score {score}). {reason}"
+                rescue.urgency_level = "HIGH"
+                rescue.notes = f"Quality Check: {category} (Score {score}). {reason}"
                 db.commit()
 
     return QualityAnalysisResponse(
         score=score,
         category=category,
         reason=reason,
-        updated_surplus_id=surplus_event_id
+        updated_rescue_id=rescue_event_id
     )

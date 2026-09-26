@@ -1,5 +1,5 @@
 """
-Anumaan Demand Prediction Service
+Andaza Demand Prediction Service
 ==================================
 Loads the pre-trained XGBoost Poisson model once at import time and
 exposes a single public function: predict(inputs) -> int.
@@ -27,7 +27,7 @@ import pandas as pd
 
 # Resolve model path relative to the repo root regardless of CWD
 _REPO_ROOT = Path(__file__).resolve().parents[3]  # .../backend/app/services/ -> repo root
-_MODEL_PATH = _REPO_ROOT / "models" / "anumaan_xgb_poisson.json"
+_MODEL_PATH = _REPO_ROOT / "models" / "andaza_xgb_poisson.json"
 
 
 def _load_model():
@@ -42,8 +42,8 @@ def _load_model():
 
     if not _MODEL_PATH.exists():
         raise FileNotFoundError(
-            f"Anumaan model not found at {_MODEL_PATH}. "
-            "Make sure 'models/anumaan_xgb_poisson.json' is present in the repo root."
+            f"Andaza model not found at {_MODEL_PATH}. "
+            "Make sure 'models/andaza_xgb_poisson.json' is present in the repo root."
         )
 
     booster = xgb.Booster()
@@ -187,7 +187,7 @@ def build_feature_vector(inputs: dict) -> pd.DataFrame:
 
 def predict(inputs: dict) -> tuple[int, dict]:
     """
-    Run one Anumaan demand prediction.
+    Run one Andaza demand prediction.
 
     Parameters
     ----------

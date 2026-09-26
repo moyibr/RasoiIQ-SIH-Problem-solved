@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
 import { api } from '@/lib/api';
@@ -38,25 +38,25 @@ export default function ReportsPage() {
       {/* Header */}
       <div className="flex items-center justify-between shrink-0">
         <div>
-          <h1 className="text-3xl font-display font-bold uppercase tracking-wide text-content-primary">Sustainability Report</h1>
+          <h1 className="text-3xl font-display font-bold text-content-primary mb-6">Sustainability Report</h1>
           <p className="text-sm text-content-secondary mt-1">
             {demoMode ? "Automated sustainability narrative and impact metrics" : "LLM-grounded narrative backed by aggregated metrics"}
           </p>
         </div>
         <div className="flex gap-4 items-center">
-          <label className="flex items-center gap-2 cursor-pointer bg-ink-surface px-3 py-1.5 rounded-sm border border-ink-raised hover:bg-ink-raised transition-colors">
+          <label className="flex items-center gap-2 cursor-pointer bg-ink-surface px-3 py-1.5 rounded-sm border border-ink-raised hover:bg-slate-100 transition-colors">
             <input 
               type="checkbox" 
               checked={demoMode} 
               onChange={e => setDemoMode(e.target.checked)} 
               className="rounded text-accent-secondary focus:ring-accent-secondary bg-ink-base border-ink-raised"
             />
-            <span className="text-xs font-mono uppercase tracking-widest text-content-secondary">Presentation Mode</span>
+            <span className="text-xs font-mono uppercase tracking-wide text-content-secondary">Presentation Mode</span>
           </label>
           <select 
             value={dateRange}
             onChange={(e) => setDateRange(e.target.value)}
-            className="border-ink-raised rounded-sm text-xs font-mono uppercase tracking-widest bg-ink-surface text-content-primary focus:border-accent-primary focus:outline-none px-3 py-1.5"
+            className="border-ink-raised rounded-sm text-xs font-mono uppercase tracking-wide bg-ink-surface text-content-primary focus:border-accent-primary focus:outline-none px-3 py-1.5"
           >
             <option value="7d">Last 7 Days</option>
             <option value="30d">Last 30 Days</option>
@@ -87,23 +87,23 @@ export default function ReportsPage() {
             <div className="bg-ink-surface p-5 rounded-sm border border-ink-raised shadow-none">
               <div className="flex items-center gap-3 mb-2">
                 <Leaf size={16} className="text-status-success" />
-                <h3 className="font-mono text-xs uppercase tracking-widest text-content-secondary">Rescued</h3>
+                <h3 className="font-mono text-xs  tracking-wide text-content-secondary">Rescued</h3>
               </div>
-              <p className="text-3xl font-display font-bold uppercase tracking-wide text-content-primary">{metrics?.surplus?.kg_rescued || 0} <span className="font-mono text-xs text-content-secondary uppercase tracking-widest">kg</span></p>
+              <p className="text-3xl font-display font-bold uppercase tracking-wide text-content-primary">{metrics?.rescue?.kg_rescued || 0} <span className="font-mono text-xs text-content-secondary uppercase tracking-wide">kg</span></p>
             </div>
             
             <div className="bg-ink-surface p-5 rounded-sm border border-ink-raised shadow-none">
               <div className="flex items-center gap-3 mb-2">
                 <Cloud size={16} className="text-accent-secondary" />
-                <h3 className="font-mono text-xs uppercase tracking-widest text-content-secondary">CO2e Avoided</h3>
+                <h3 className="font-mono text-xs  tracking-wide text-content-secondary">CO2e Avoided</h3>
               </div>
-              <p className="text-3xl font-display font-bold uppercase tracking-wide text-content-primary">{metrics?.impact?.co2e_avoided_kg || 0} <span className="font-mono text-xs text-content-secondary uppercase tracking-widest">kg</span></p>
+              <p className="text-3xl font-display font-bold uppercase tracking-wide text-content-primary">{metrics?.impact?.co2e_avoided_kg || 0} <span className="font-mono text-xs text-content-secondary uppercase tracking-wide">kg</span></p>
             </div>
 
             <div className="bg-ink-surface p-5 rounded-sm border border-ink-raised shadow-none">
               <div className="flex items-center gap-3 mb-2">
                 <Users size={16} className="text-accent-primary" />
-                <h3 className="font-mono text-xs uppercase tracking-widest text-content-secondary">Meals Redistributed</h3>
+                <h3 className="font-mono text-xs  tracking-wide text-content-secondary">Meals Redistributed</h3>
               </div>
               <p className="text-3xl font-display font-bold uppercase tracking-wide text-content-primary">{metrics?.impact?.meals_redistributed || 0}</p>
             </div>
@@ -111,18 +111,18 @@ export default function ReportsPage() {
             <div className="bg-ink-surface p-5 rounded-sm border border-ink-raised shadow-none">
               <div className="flex items-center gap-3 mb-2">
                 <CheckCircle size={16} className="text-status-warning" />
-                <h3 className="font-mono text-xs uppercase tracking-widest text-content-secondary">Rescue Rate</h3>
+                <h3 className="font-mono text-xs  tracking-wide text-content-secondary">Rescue Rate</h3>
               </div>
-              <p className="text-3xl font-display font-bold uppercase tracking-wide text-content-primary">{metrics?.surplus?.rescue_rate_pct || 0}%</p>
+              <p className="text-3xl font-display font-bold uppercase tracking-wide text-content-primary">{metrics?.rescue?.rescue_rate_pct || 0}%</p>
             </div>
           </div>
 
           {/* Narrative */}
           <div className="bg-ink-surface rounded-sm border border-ink-raised shadow-none overflow-hidden flex flex-col">
             <div className="p-5 border-b border-ink-raised flex justify-between items-center bg-ink-base/50">
-              <h2 className="font-display font-bold uppercase tracking-wide text-content-primary">Executive Summary</h2>
+              <h2 className="font-display font-bold  tracking-wide text-content-primary">Executive Summary</h2>
               <span className={clsx("text-xs font-semibold px-2 py-1 rounded border", 
-                report.narrative_source === 'gemini' ? 'bg-accent-secondary/10 text-accent-secondary border-accent-secondary/20 font-mono tracking-widest' : 'bg-ink-raised text-content-secondary font-mono tracking-widest uppercase border-ink-raised'
+                report.narrative_source === 'gemini' ? 'bg-accent-secondary/10 text-accent-secondary border-accent-secondary/20 font-mono tracking-wide' : 'bg-slate-100 text-content-secondary font-mono tracking-wide uppercase border-ink-raised'
               )}>
                 Source: {report.narrative_source}
               </span>

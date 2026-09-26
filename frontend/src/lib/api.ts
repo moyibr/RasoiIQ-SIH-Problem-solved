@@ -13,7 +13,7 @@ export interface ForecastResponse {
   predictions: ForecastPoint[];
 }
 
-export interface SurplusEvent {
+export interface RescueEvent {
   id: number;
   kitchen_id: number;
   kitchen_name: string;
@@ -68,7 +68,7 @@ export interface DailyStat {
 export interface DashboardSummary {
   kg_rescued_today: number;
   kg_wasted_today: number;
-  active_surplus_count: number;
+  active_rescue_count: number;
   ngos_served_this_month: number;
   forecast_accuracy_pct: number;
   co2_saved_today_kg: number;
@@ -77,7 +77,7 @@ export interface DashboardSummary {
 }
 
 // ---------------------------------------------------------------------------
-// Anumaan — Demand Prediction
+// Andaza — Demand Prediction
 // ---------------------------------------------------------------------------
 
 /** Frontend form state — camelCase */
@@ -102,7 +102,7 @@ export interface PredictDemandRequest {
 export interface PredictDemandResponse {
   predicted_customers: number;
   recommended_production: number | null;  // stub — always null for now
-  expected_surplus: number | null;         // stub — always null for now
+  expected_rescue: number | null;         // stub — always null for now
   location_id: string;
   date: string;
   derived_features: Record<string, number>;
@@ -182,9 +182,9 @@ export interface SustainabilityMetrics {
     period_start: string;
     period_end: string;
     is_synthetic_data: boolean;
-    surplus_data_available: boolean;
+    rescue_data_available: boolean;
   };
-  surplus: {
+  rescue: {
     total_events_detected: number;
     kg_rescued: number | null;
     kg_wasted_expired: number | null;
@@ -230,6 +230,9 @@ const PRIMARY_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8080';
 const FALLBACK_URL = process.env.NEXT_PUBLIC_API_URL || 'http://127.0.0.1:8081';
 const BASE_URL = ''; // Callers prepend this, making the arg an endpoint path like '/route'
 
+/** Backend origin. Use this for one-off fetches instead of hardcoding a host:port. */
+export const API_BASE_URL = PRIMARY_URL;
+
 async function fetchWithCheck(endpoint: string, options?: RequestInit) {
   try {
     const response = await fetch(`${PRIMARY_URL}${endpoint}`, options);
@@ -263,7 +266,7 @@ export const api = {
     // Fetch predictions in parallel
     const promises = dates.map(date => {
       const params = new URLSearchParams({ kitchen_id: kitchenId, date: date });
-      return fetchWithCheck(`${BASE_URL}/anumaan/forecast?${params.toString()}`);
+      return fetchWithCheck(`${BASE_URL}/andaza/forecast?${params.toString()}`);
     });
 
     const responses: PredictDemandResponse[] = await Promise.all(promises);
@@ -290,23 +293,23 @@ export const api = {
     };
   },
 
-  getSurplus: (status?: string): Promise<SurplusEvent[]> => {
+  getRescue: (status?: string): Promise<RescueEvent[]> => {
     const params = new URLSearchParams();
     if (status) params.append('status', status);
     const query = params.toString() ? `?${params.toString()}` : '';
-    return fetchWithCheck(`${BASE_URL}/surplus${query}`);
+    return fetchWithCheck(`${BASE_URL}/rescue${query}`);
   },
 
-  createManualSurplus: (data: { kitchen_id: number; category_name: string; quantity_kg: number; hours_remaining_override?: number }) => {
-    return fetchWithCheck(`${BASE_URL}/surplus`, {
+  createManualRescue: (data: { kitchen_id: number; category_name: string; quantity_kg: number; hours_remaining_override?: number }) => {
+    return fetchWithCheck(`${BASE_URL}/rescue`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
   },
 
-  getMatches: (surplusEventId: number): Promise<NGOMatch[]> => {
-    return fetchWithCheck(`${BASE_URL}/surplus/${surplusEventId}/matches`);
+  getMatches: (rescueEventId: number): Promise<NGOMatch[]> => {
+    return fetchWithCheck(`${BASE_URL}/rescue/${rescueEventId}/matches`);
   },
   
   optimizeRoute: (kitchenId: number, deliveryIds: number[]): Promise<RouteResponse> => {
@@ -341,7 +344,7 @@ export const api = {
   },
 
   /**
-   * POST /anumaan/predict-demand
+   * POST /andaza/predict-demand
    *
    * Explicit camelCase → snake_case mapping (matches PredictDemandRequest Pydantic schema exactly):
    *   locationId       → location_id
@@ -376,7 +379,7 @@ export const api = {
       demand_7_days_ago: req.demand7DaysAgo,
       demand_ma7:        req.demandMa7,
     };
-    return fetchWithCheck(`${BASE_URL}/anumaan/predict-demand`, {
+    return fetchWithCheck(`${BASE_URL}/andaza/predict-demand`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(body),
@@ -392,11 +395,11 @@ export const api = {
   getSustainabilityReport: (dateRange: string): Promise<SustainabilityReport> =>
     fetchWithCheck(`${BASE_URL}/reports/sustainability?date_range=${encodeURIComponent(dateRange)}`),
 
-  analyzeQuality: async (imageFile: File, surplusEventId?: number): Promise<any> => {
+  analyzeQuality: async (imageFile: File, rescueEventId?: number): Promise<any> => {
     const formData = new FormData();
     formData.append('image', imageFile);
-    if (surplusEventId) {
-      formData.append('surplus_event_id', surplusEventId.toString());
+    if (rescueEventId) {
+      formData.append('rescue_event_id', rescueEventId.toString());
     }
     const response = await fetch(`${PRIMARY_URL}/quality/analyze`, {
       method: 'POST',

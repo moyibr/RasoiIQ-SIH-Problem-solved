@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-class SurplusEventResponse(BaseModel):
+class RescueEventResponse(BaseModel):
     id: int
     kitchen_id: int
     kitchen_name: str

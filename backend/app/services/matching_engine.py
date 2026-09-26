@@ -4,7 +4,7 @@ from typing import List, Dict, Any
 from sqlalchemy.orm import Session
 
 from app.models.ngo import NGO
-from app.models.surplus import SurplusEvent
+from app.models.rescue import RescueEvent
 from app.models.kitchen import Kitchen
 from app.models.delivery import Delivery
 from app.models.food_category import FoodCategory
@@ -25,15 +25,15 @@ def haversine(lat1, lon1, lat2, lon2):
     c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
     return R * c
 
-def calculate_ngo_matches(db: Session, surplus_event: SurplusEvent, ngos_list: List[NGO]) -> List[Dict[str, Any]]:
+def calculate_ngo_matches(db: Session, rescue_event: RescueEvent, ngos_list: List[NGO]) -> List[Dict[str, Any]]:
     # Get kitchen coordinates
-    kitchen = db.query(Kitchen).filter(Kitchen.id == surplus_event.kitchen_id).first()
-    category = db.query(FoodCategory).filter(FoodCategory.id == surplus_event.category_id).first()
+    kitchen = db.query(Kitchen).filter(Kitchen.id == rescue_event.kitchen_id).first()
+    category = db.query(FoodCategory).filter(FoodCategory.id == rescue_event.category_id).first()
     
     if not kitchen or not category:
         return []
 
-    remaining_window_hours, urgency = calculate_urgency(category.name, surplus_event.batch_created_at)
+    remaining_window_hours, urgency = calculate_urgency(category.name, rescue_event.batch_created_at)
     
     if urgency == "EXPIRED" or remaining_window_hours <= 0:
         return []
@@ -60,7 +60,7 @@ def calculate_ngo_matches(db: Session, surplus_event: SurplusEvent, ngos_list: L
             continue
 
         # Capacity
-        if ngo.capacity_kg < surplus_event.quantity_kg:
+        if ngo.capacity_kg < rescue_event.quantity_kg:
             continue
 
         # Expiry
@@ -90,7 +90,7 @@ def calculate_ngo_matches(db: Session, surplus_event: SurplusEvent, ngos_list: L
 
         # 2. SCORING
         dist_score = (1 - (actual_road_distance / 15.0)) * 100
-        capacity_score = (surplus_event.quantity_kg / ngo.capacity_kg) * 100
+        capacity_score = (rescue_event.quantity_kg / ngo.capacity_kg) * 100
         margin_hours = remaining_window_hours - (travel_time_hours + SAFETY_BUFFER_HOURS)
         time_score = (margin_hours / remaining_window_hours) * 100
         food_type_score = 100.0

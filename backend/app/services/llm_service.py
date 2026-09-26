@@ -56,18 +56,18 @@ def try_gemini(prompt: str) -> Optional[str]:
 
 def generate_template(metrics: Dict[str, Any]) -> str:
     """Tier 2: Deterministic Template (Final Fallback)"""
-    surplus_avail = metrics['metadata']['surplus_data_available']
+    rescue_avail = metrics['metadata']['rescue_data_available']
     pu_avail = metrics['processing_unit']['data_available']
     
     paragraphs = []
     
-    if surplus_avail:
-        rescued = metrics['surplus']['kg_rescued']
-        wasted = metrics['surplus']['kg_wasted_expired']
+    if rescue_avail:
+        rescued = metrics['rescue']['kg_rescued']
+        wasted = metrics['rescue']['kg_wasted_expired']
         co2e = metrics['impact']['co2e_avoided_kg']
         meals = metrics['impact']['meals_redistributed']
         paragraphs.append(
-            f"During the reporting period, the platform facilitated the rescue of {rescued} kg of surplus food, "
+            f"During the reporting period, the platform facilitated the rescue of {rescued} kg of rescue food, "
             f"redistributing approximately {meals} meals. Simultaneously, {wasted} kg of food was recorded as expired or wasted. "
             f"The successful food recovery avoided an estimated {co2e} kg of CO2e emissions."
         )
@@ -79,13 +79,13 @@ def generate_template(metrics: Dict[str, Any]) -> str:
             
     else:
         paragraphs.append(
-            "No kitchen surplus data was recorded during this reporting period. "
+            "No kitchen rescue data was recorded during this reporting period. "
             "Consequently, metrics for rescued food, redistributed meals, and avoided CO2e emissions are unavailable."
         )
         
     mae = metrics['forecast_performance']['mae_customers_per_day']
     paragraphs.append(
-        f"The Anumaan demand forecasting model operated with a Mean Absolute Error (MAE) of {mae} customers per day "
+        f"The Andaza demand forecasting model operated with a Mean Absolute Error (MAE) of {mae} customers per day "
         "on the test set. (MAPE metric is not recorded)."
     )
         

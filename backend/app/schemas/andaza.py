@@ -1,5 +1,5 @@
 ﻿"""
-Pydantic schemas for Anumaan — the AI demand forecasting engine.
+Pydantic schemas for Andaza — the AI demand forecasting engine.
 
 PredictDemandRequest  : what the kitchen manager sends
 PredictDemandResponse : what the API returns
@@ -16,7 +16,7 @@ VALID_LOCATIONS = {f"Loc_{i}" for i in range(1, 27)}
 
 class PredictDemandRequest(BaseModel):
     """
-    All inputs needed to run one Anumaan prediction.
+    All inputs needed to run one Andaza prediction.
 
     Temporal features (Day_of_Week, Month, etc.) are derived automatically
     from `date` inside the service -- the manager only needs to supply `date`.
@@ -105,23 +105,23 @@ class PredictDemandRequest(BaseModel):
 
 class PredictDemandResponse(BaseModel):
     """
-    Anumaan prediction response.
+    Andaza prediction response.
 
-    recommended_production and expected_surplus are stubs until the
+    recommended_production and expected_rescue are stubs until the
     production planning module is built.
     Formula: Production = MAX(0, Forecast x (1 + buffer%) - usable_inventory)
     """
 
     predicted_customers: int = Field(
-        ..., description="Anumaan's predicted customer count for the requested date/location."
+        ..., description="Andaza's predicted customer count for the requested date/location."
     )
     recommended_production: Optional[int] = Field(
         None,
         description="[STUB] Requires dynamic buffer % and usable inventory -- not yet implemented.",
     )
-    expected_surplus: Optional[int] = Field(
+    expected_rescue: Optional[int] = Field(
         None,
-        description="[STUB] Expected surplus after production. Not yet implemented.",
+        description="[STUB] Expected rescue after production. Not yet implemented.",
     )
 
     # -- Diagnostic fields (helpful for debugging / display) -----------------

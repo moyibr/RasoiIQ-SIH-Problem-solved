@@ -1,5 +1,5 @@
 """
-Anumaan router — POST /predict-demand
+Andaza router — POST /predict-demand
 """
 
 from __future__ import annotations
@@ -7,14 +7,14 @@ from __future__ import annotations
 from fastapi import APIRouter, HTTPException, Query
 import datetime
 
-from app.schemas.anumaan import PredictDemandRequest, PredictDemandResponse
-from app.services import anumaan as anumaan_service
-from app.services.anumaan_context import KITCHEN_LOCATION_MAP, SEASONAL_WEATHER, RECENT_AVERAGES, PUBLIC_HOLIDAYS, LOCAL_EVENTS
+from app.schemas.andaza import PredictDemandRequest, PredictDemandResponse
+from app.services import andaza as andaza_service
+from app.services.andaza_context import KITCHEN_LOCATION_MAP, SEASONAL_WEATHER, RECENT_AVERAGES, PUBLIC_HOLIDAYS, LOCAL_EVENTS
 from app.database import SessionLocal
 from app.models.consumption import ConsumptionHistory
 from sqlalchemy import func
 
-router = APIRouter(tags=["Anumaan"])
+router = APIRouter(tags=["Andaza"])
 
 @router.get(
     "/forecast",
@@ -106,7 +106,7 @@ def auto_forecast(
     req = PredictDemandRequest(**inputs)
     
     try:
-        predicted_customers, derived_features = anumaan_service.predict(req.model_dump())
+        predicted_customers, derived_features = andaza_service.predict(req.model_dump())
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except (FileNotFoundError, RuntimeError) as exc:
@@ -124,7 +124,7 @@ def auto_forecast(
     return PredictDemandResponse(
         predicted_customers=predicted_customers,
         recommended_production=None,
-        expected_surplus=None,
+        expected_rescue=None,
         location_id=location_id,
         date=date,
         derived_features=derived_features,
@@ -137,15 +137,15 @@ def auto_forecast(
     response_model=PredictDemandResponse,
     summary="Predict customer demand for a given date and location",
     description=(
-        "Accepts kitchen manager inputs and returns Anumaan's predicted "
+        "Accepts kitchen manager inputs and returns Andaza's predicted "
         "customer count for the specified date and location, plus derived "
-        "diagnostic features. `recommended_production` and `expected_surplus` "
+        "diagnostic features. `recommended_production` and `expected_rescue` "
         "are stubs until the production planning module is built."
     ),
 )
 def predict_demand(request: PredictDemandRequest) -> PredictDemandResponse:
     """
-    Run one Anumaan demand prediction.
+    Run one Andaza demand prediction.
 
     Raises
     ------
@@ -155,7 +155,7 @@ def predict_demand(request: PredictDemandRequest) -> PredictDemandResponse:
     """
     try:
         inputs = request.model_dump()
-        predicted_customers, derived_features = anumaan_service.predict(inputs)
+        predicted_customers, derived_features = andaza_service.predict(inputs)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
     except (FileNotFoundError, RuntimeError) as exc:
@@ -164,7 +164,7 @@ def predict_demand(request: PredictDemandRequest) -> PredictDemandResponse:
     return PredictDemandResponse(
         predicted_customers=predicted_customers,
         recommended_production=None,  # stub
-        expected_surplus=None,         # stub
+        expected_rescue=None,         # stub
         location_id=request.location_id,
         date=request.date,
         derived_features=derived_features,

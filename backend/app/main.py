@@ -5,8 +5,8 @@ import datetime
 import os
 from dotenv import load_dotenv
 
-from app.routers import surplus, match, route, dashboard, anumaan, production
-from app.routers import processing_unit, reports, quality, iot
+from app.routers import rescue, match, route, dashboard, andaza, production
+from app.routers import processing_unit, reports, quality, iot, auth
 
 load_dotenv()
 
@@ -14,14 +14,15 @@ app = FastAPI(title="Food Waste Reduction API", version="1.0.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(anumaan.router, prefix="/anumaan", tags=["Anumaan"])
-app.include_router(surplus.router, tags=["Surplus"])
+app.include_router(auth.router)
+app.include_router(andaza.router, prefix="/andaza", tags=["Andaza"])
+app.include_router(rescue.router, tags=["Rescue"])
 app.include_router(match.router, tags=["Matching"])
 app.include_router(route.router, tags=["Routing"])
 app.include_router(dashboard.router, prefix="/dashboard", tags=["Dashboard"])

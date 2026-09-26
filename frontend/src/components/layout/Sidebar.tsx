@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 import { LayoutDashboard, AlertTriangle, Map as MapIcon, BarChart2, BrainCircuit, Factory, Camera, Leaf, Cpu } from 'lucide-react';
 import clsx from 'clsx';
 import { motion } from 'framer-motion';
-import { api } from '@/lib/api';
+import { api, API_BASE_URL } from '@/lib/api';
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -17,7 +17,7 @@ export default function Sidebar() {
   useEffect(() => {
     async function ping() {
       try {
-        const res = await fetch('http://127.0.0.1:8080/health', { cache: 'no-store' });
+        const res = await fetch(`${API_BASE_URL}/health`, { cache: 'no-store' });
         const data = await res.json();
         setBackendOk(res.ok && data.status === 'ok');
       } catch {
@@ -33,7 +33,7 @@ export default function Sidebar() {
     async function checkAlerts() {
       try {
         const summary = await api.getDashboardSummary();
-        setActiveAlerts(summary.active_surplus_count);
+        setActiveAlerts(summary.active_rescue_count);
       } catch {
         // ignore
       }
@@ -45,9 +45,9 @@ export default function Sidebar() {
 
   const links = [
     { href: '/dashboard', label: 'Dashboard',         icon: LayoutDashboard },
-    { href: '/anumaan',   label: 'Anumaan AI',            icon: BrainCircuit    },
+    { href: '/andaza',   label: 'ANYA Ai',            icon: BrainCircuit    },
     { href: '/quality',   label: 'Quality Check',         icon: Camera          },
-    { href: '/surplus',   label: 'Surplus Events', icon: AlertTriangle, hasAlerts: activeAlerts > 0 },
+    { href: '/rescue',   label: 'Rescue Events', icon: AlertTriangle, hasAlerts: activeAlerts > 0 },
     { href: '/map',             label: 'Live Dispatch',      icon: MapIcon         },
     { href: '/processing-unit', label: 'Processing Unit',     icon: Factory         },
     { href: '/iot-monitor', label: 'IoT Monitor',         icon: Cpu             },
@@ -56,20 +56,20 @@ export default function Sidebar() {
   ];
 
   return (
-    <aside className="fixed left-0 top-0 w-[260px] h-full glass-premium border-r border-white/10 flex flex-col z-50">
+    <aside className="fixed left-0 top-0 w-[260px] h-full bg-white border-r border-[#E2E8F0] flex flex-col z-50">
       {/* Brand Header */}
       <div className="p-8 pb-4">
         <div className="flex items-center gap-3">
           <div className="flex items-center justify-center">
-            <Leaf className="text-status-success drop-shadow-[0_0_10px_rgba(16,185,129,0.6)]" size={28} />
+            <Leaf className="text-status-success" size={28} />
           </div>
           <div>
-            <h1 className="text-2xl font-display font-bold text-white tracking-tight glow-text-primary">RasoiIQ</h1>
+            <h1 className="text-3xl font-display font-bold text-content-primary mb-6">RasoiIQ</h1>
           </div>
         </div>
         <div className="mt-4 flex items-center gap-2 px-1">
           <div className="h-[1px] flex-1 bg-gradient-to-r from-accent-secondary/50 to-transparent" />
-          <span className="text-[9px] font-mono text-content-secondary tracking-widest uppercase">SYS_CONSOLE</span>
+          <span className="text-[9px] font-mono text-content-secondary tracking-wide uppercase">SYS_CONSOLE</span>
         </div>
       </div>
 
@@ -84,16 +84,16 @@ export default function Sidebar() {
               href={link.href}
               onMouseEnter={() => setHoveredPath(link.href)}
               className={clsx(
-                'group flex items-center gap-3 px-4 py-3 rounded-2xl text-[13px] font-display font-bold tracking-wider uppercase transition-colors relative z-10',
+                'group flex items-center gap-3 px-4 py-3 rounded-xl text-[13px] font-display font-bold tracking-wider uppercase transition-colors relative z-10',
                 isActive
                   ? 'text-accent-primary'
-                  : 'text-content-secondary hover:text-white'
+                  : 'text-content-secondary hover:text-content-primary'
               )}
             >
               {isActive && (
                 <motion.div
                   layoutId="activePill"
-                  className="absolute inset-0 bg-accent-primary/10 rounded-2xl border border-accent-primary/20 shadow-[inset_0_0_20px_rgba(232,163,61,0.1)] -z-10"
+                  className="absolute inset-0 bg-[#16A34A]/10 rounded-xl -z-10"
                   transition={{ type: "spring", stiffness: 350, damping: 30 }}
                 />
               )}
@@ -101,7 +101,7 @@ export default function Sidebar() {
               {hoveredPath === link.href && !isActive && (
                 <motion.div
                   layoutId="hoverPill"
-                  className="absolute inset-0 bg-white/5 rounded-2xl -z-10"
+                  className="absolute inset-0 bg-slate-100 rounded-xl -z-10"
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   exit={{ opacity: 0 }}
@@ -112,7 +112,7 @@ export default function Sidebar() {
                 size={18} 
                 className={clsx(
                   "transition-all duration-300", 
-                  isActive ? "text-accent-primary drop-shadow-[0_0_8px_rgba(232,163,61,0.8)]" : "group-hover:scale-110"
+                  isActive ? "text-accent-primary" : "group-hover:scale-110"
                 )} 
               />
               <span className="flex-1 pt-0.5">{link.label}</span>
@@ -121,7 +121,7 @@ export default function Sidebar() {
                 <motion.div 
                   initial={{ scale: 0 }} 
                   animate={{ scale: 1 }} 
-                  className="w-2 h-2 rounded-full bg-status-critical shadow-[0_0_10px_rgba(217,86,74,1)] animate-pulse" 
+                  className="w-2 h-2 rounded-full bg-status-critical" 
                   title={`${activeAlerts} active alerts`}
                 />
               )}
@@ -132,21 +132,20 @@ export default function Sidebar() {
 
       {/* System Status Footer */}
       <div className="p-6">
-        <div className="p-4 rounded-2xl bg-black/30 border border-white/5 flex items-center gap-3 backdrop-blur-md relative overflow-hidden group">
-          <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:animate-[shimmer_2s_infinite] skew-x-12" />
+        <div className="p-4 rounded-xl bg-slate-50 border border-[#E2E8F0] flex items-center gap-3 relative overflow-hidden group">
           
           <div className="relative">
             {backendOk === null ? (
-              <div className="w-2.5 h-2.5 rounded-full bg-content-secondary animate-pulse" />
+              <div className="w-2.5 h-2.5 rounded-full bg-content-secondary" />
             ) : backendOk ? (
-              <div className="w-2.5 h-2.5 rounded-full bg-status-success shadow-[0_0_12px_rgba(95,174,110,0.8)] animate-pulse" />
+              <div className="w-2.5 h-2.5 rounded-full bg-status-success" />
             ) : (
-              <div className="w-2.5 h-2.5 rounded-full bg-status-critical shadow-[0_0_12px_rgba(217,86,74,0.8)] animate-pulse" />
+              <div className="w-2.5 h-2.5 rounded-full bg-status-critical" />
             )}
           </div>
           
           <div className="flex flex-col">
-            <span className="text-[10px] text-content-secondary font-mono tracking-widest uppercase">
+            <span className="text-[10px] text-content-secondary font-mono tracking-wide uppercase">
               Core Backend
             </span>
             <span className={clsx(

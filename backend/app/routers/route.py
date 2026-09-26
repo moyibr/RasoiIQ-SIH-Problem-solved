@@ -5,7 +5,7 @@ from app.schemas.route import RouteResponse, Waypoint, RouteRequest
 from app.models.kitchen import Kitchen
 from app.models.delivery import Delivery
 from app.models.ngo import NGO
-from app.models.surplus import SurplusEvent
+from app.models.rescue import RescueEvent
 from app.models.food_category import FoodCategory
 from app.services.osrm_client import get_osrm_matrices, get_osrm_route_geometry
 from app.services.routing_engine import optimize_route_engine
@@ -20,27 +20,27 @@ def optimize_route(req: RouteRequest, db: Session = Depends(get_db)):
     if not kitchen:
         raise HTTPException(status_code=404, detail="Kitchen not found")
         
-    # For demo purposes, the frontend is passing surplus_ids in req.delivery_ids
-    # Let's fetch the surplus events directly
-    surplus_events = db.query(SurplusEvent).filter(SurplusEvent.id.in_(req.delivery_ids)).all()
-    if not surplus_events:
-        raise HTTPException(status_code=404, detail="Surplus events not found")
+    # For demo purposes, the frontend is passing rescue_ids in req.delivery_ids
+    # Let's fetch the rescue events directly
+    rescue_events = db.query(RescueEvent).filter(RescueEvent.id.in_(req.delivery_ids)).all()
+    if not rescue_events:
+        raise HTTPException(status_code=404, detail="Rescue events not found")
         
     coordinates = [(kitchen.lat, kitchen.lng)]
     time_windows_seconds = [(0, 24 * 3600)] # Kitchen time window
     
     delivery_objects = []
     
-    for surplus in surplus_events:
+    for rescue in rescue_events:
         # Just grab any active NGO for demo routing
         ngo = db.query(NGO).filter(NGO.is_active == True).first()
         if not ngo:
             continue
             
-        category = db.query(FoodCategory).filter(FoodCategory.id == surplus.category_id).first()
+        category = db.query(FoodCategory).filter(FoodCategory.id == rescue.category_id).first()
         cat_name = category.name if category else "Rice"
         
-        remaining_window_hours, _ = calculate_urgency(cat_name, surplus.batch_created_at)
+        remaining_window_hours, _ = calculate_urgency(cat_name, rescue.batch_created_at)
         
         # Ensure max_time is at least 2 hours so VRPTW doesn't fail immediately
         max_time = max(2 * 3600, int(remaining_window_hours * 3600))

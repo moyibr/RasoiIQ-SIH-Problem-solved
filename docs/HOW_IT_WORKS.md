@@ -4,19 +4,19 @@ This document is your cheat sheet for presenting RasoiIQ. It breaks down the cor
 
 ---
 
-## 1. Demand Forecasting (Anumaan Engine)
+## 1. Demand Forecasting (Andaza Engine)
 
 **What it does:**
 Predicts how many customers will show up at an institutional kitchen (like a college hostel) tomorrow and the next 7 days, so the kitchen doesn't overcook or undercook.
 
 **Where the code lives:**
-- **Backend Model:** `backend/app/services/anumaan.py` (loads the trained XGBoost model and preprocessor).
-- **Backend API:** `backend/app/routers/anumaan.py` (`GET /anumaan/forecast`).
-- **Frontend UI:** `frontend/src/app/anumaan/page.tsx` and the `ForecastChart` component.
+- **Backend Model:** `backend/app/services/andaza.py` (loads the trained XGBoost model and preprocessor).
+- **Backend API:** `backend/app/routers/andaza.py` (`GET /andaza/forecast`).
+- **Frontend UI:** `frontend/src/app/andaza/page.tsx` and the `ForecastChart` component.
 
 **Data Flow:**
 1. User requests a forecast on the frontend for `K1_MainCampus`.
-2. Frontend calls `GET /anumaan/forecast` via `api.ts`.
+2. Frontend calls `GET /andaza/forecast` via `api.ts`.
 3. The backend fetches historical weather, holidays, and past 7-day lagged data for that specific location.
 4. It feeds this array into the pre-trained XGBoost (`.joblib` file) via `model.predict()`.
 5. The predicted customer count is returned and plotted on the Recharts UI.
@@ -54,7 +54,7 @@ Allows users to upload a photo of food to instantly calculate a "Freshness Score
 2. `quality.py` reads the image into memory using `cv2.imdecode` (OpenCV).
 3. The image is resized and converted from BGR to HSV (Hue, Saturation, Value) color space.
 4. The algorithm calculates the variance of the Value channel (texture) and counts the ratio of "dark/bruised pixels".
-5. A score is returned. If the user provided a `surplus_event_id`, the backend automatically updates that item's urgency to `HIGH` in the SQLite database if the score is low.
+5. A score is returned. If the user provided a `rescue_event_id`, the backend automatically updates that item's urgency to `HIGH` in the SQLite database if the score is low.
 
 **Formulas/Assumptions:**
 - **Dark Spot Ratio:** `dark_pixels / total_pixels`. If this ratio is high, freshness drops.
@@ -86,7 +86,7 @@ Calculates the environmental and social impact of the food rescued by the platfo
 
 **Data Flow:**
 1. Frontend loads the ESG page and requests `/reports/esg-analytics`.
-2. Backend queries the `SurplusEvent` table for all items marked `MATCHED` or `DELIVERED` (saved) vs `EXPIRED` (wasted).
+2. Backend queries the `RescueEvent` table for all items marked `MATCHED` or `DELIVERED` (saved) vs `EXPIRED` (wasted).
 3. It loops through the records, applying constants to calculate CO2, meals, and financial value.
 4. It groups the data by `YYYY-MM` to build a time-series array.
 5. Frontend renders this array into dynamic bar charts and metric cards.

@@ -13,7 +13,7 @@ dates = ["2026-09-22", "2026-09-26", "2026-10-02"]
 
 for date in dates:
     print(f"\n--- Payload for {date} ---")
-    resp = client.get(f"/anumaan/forecast?kitchen_id={kitchen}&date={date}")
+    resp = client.get(f"/andaza/forecast?kitchen_id={kitchen}&date={date}")
     if resp.status_code == 200:
         data = resp.json()
         derived = data['derived_features']

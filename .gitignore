@@ -28,5 +28,11 @@ Thumbs.db
 # Logs
 *.log
 
+# TypeScript incremental build cache
+*.tsbuildinfo
+
+# One-off local refactor helper (contains machine-specific paths)
+rename_script.py
+
 # SQLite databases (runtime artifacts)
 *.db

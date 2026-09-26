@@ -63,21 +63,21 @@ function Scorecard({
       <div className="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       <div>
         <div className="flex items-center justify-between mb-4">
-          <p className="font-mono text-[10px] uppercase tracking-widest text-content-secondary">{label}</p>
+          <p className="font-mono text-[10px] uppercase tracking-wide text-content-secondary">{label}</p>
           <Icon size={16} className="text-content-secondary opacity-50" />
         </div>
         <p className="text-3xl font-mono font-bold text-accent-secondary tabular-nums tracking-tight">{value}</p>
       </div>
       <div className="mt-4">
         {progressPct !== undefined && (
-          <div className="h-0.5 bg-ink-raised rounded-full overflow-hidden mb-1.5 w-full">
+          <div className="h-0.5 bg-slate-100 rounded-full overflow-hidden mb-1.5 w-full">
             <div 
               className={`h-full transition-all ${statusClass || 'bg-accent-secondary'}`}
               style={{ width: `${Math.min(100, Math.max(0, progressPct))}%` }}
             />
           </div>
         )}
-        {sub && <p className="text-[10px] font-mono tracking-widest uppercase text-content-secondary">{sub}</p>}
+        {sub && <p className="text-[10px] font-mono tracking-wide uppercase text-content-secondary">{sub}</p>}
       </div>
     </motion.div>
   );
@@ -107,21 +107,21 @@ function TrendChart({
 
   return (
     <div className="bg-ink-surface rounded-sm p-5 border border-ink-raised shadow-none">
-      <h3 className="font-display font-bold uppercase tracking-wide text-content-primary mb-3">{label}</h3>
+      <h3 className="font-display font-bold  tracking-wide text-content-primary mb-3">{label}</h3>
       <div className="h-[180px]">
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={formatted} margin={{ top: 4, right: 8, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#232B38" />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#FFFFFF" />
             <XAxis
               dataKey="displayDate"
-              stroke="#9AA3B2"
+              stroke="#64748B"
               fontSize={10}
               tickLine={false}
               axisLine={false}
               interval="preserveStartEnd"
             />
             <YAxis
-              stroke="#9AA3B2"
+              stroke="#64748B"
               fontSize={10}
               tickLine={false}
               axisLine={false}
@@ -129,11 +129,11 @@ function TrendChart({
               width={40}
             />
             <Tooltip
-              contentStyle={{ backgroundColor: '#232B38', border: '1px solid #1B212B', borderRadius: '4px', color: '#F2F0EA', fontSize: 12 }} itemStyle={{ color: '#F2F0EA' }}
+              contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '4px', color: '#0F172A', fontSize: 12 }} itemStyle={{ color: '#0F172A' }}
               formatter={(v: number) => [`${v.toFixed(2)}${suffix}`, label]}
             />
             {refLine != null && (
-              <ReferenceLine y={refLine} stroke="#E8A33D" strokeDasharray="4 4" label={{ value: refLabel, position: 'insideTopRight', fontSize: 10, fill: '#E8A33D' }} />
+              <ReferenceLine y={refLine} stroke="#D97706" strokeDasharray="4 4" label={{ value: refLabel, position: 'insideTopRight', fontSize: 10, fill: '#D97706' }} />
             )}
             <Line type="monotone" dataKey={dataKey as string} stroke={color} strokeWidth={2} dot={false} />
           </ComposedChart>
@@ -172,7 +172,7 @@ export default function ProcessingUnitPage() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-3xl font-display font-bold text-content-primary">Processing Unit Efficiency</h1>
+          <h1 className="text-3xl font-display font-bold text-content-primary mb-6">Processing Unit Efficiency</h1>
           <p className="text-sm text-content-secondary mt-1">
             Central Processing Unit — Maize/Pulse Line Â· Peenya Industrial Area, Bengaluru
           </p>
@@ -184,8 +184,8 @@ export default function ProcessingUnitPage() {
               onClick={() => setRange(r)}
               className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                 range === r
-                  ? 'bg-teal text-white'
-                  : 'bg-ink-surface text-content-secondary border border-ink-raised hover:bg-ink-raised transition-colors'
+                  ? 'bg-teal text-content-primary'
+                  : 'bg-ink-surface text-content-secondary border border-ink-raised hover:bg-slate-100 transition-colors'
               }`}
             >
               {r}
@@ -320,7 +320,7 @@ export default function ProcessingUnitPage() {
               </div>
               <div className="divide-y divide-ink-raised max-h-72 overflow-y-auto">
                 {flagged.flagged_days.slice(0, 20).map((fd) => (
-                  <div key={fd.date} className="px-5 py-3 hover:bg-ink-raised transition-colors">
+                  <div key={fd.date} className="px-5 py-3 hover:bg-slate-100 transition-colors">
                     <div className="flex items-center justify-between">
                       <div>
                         <span className="text-sm font-medium text-content-primary">
@@ -337,7 +337,7 @@ export default function ProcessingUnitPage() {
                       {fd.failed_metrics.map((fm) => (
                         <span
                           key={fm.metric}
-                          className="text-xs px-2 py-0.5 bg-status-critical/10 text-status-critical border border-status-critical/20 font-mono tracking-widest uppercase rounded-full"
+                          className="text-xs px-2 py-0.5 bg-status-critical/10 text-status-critical border border-status-critical/20 font-mono tracking-wide uppercase rounded-full"
                         >
                           {fm.metric}: {fm.value} ({fm.threshold})
                         </span>

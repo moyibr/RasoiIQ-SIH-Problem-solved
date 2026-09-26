@@ -6,8 +6,8 @@ import json
 
 sys.path.append(str(Path("backend").resolve()))
 from app.database import engine
-from app.services.anumaan import predict
-from app.routers.anumaan import auto_forecast
+from app.services.andaza import predict
+from app.routers.andaza import auto_forecast
 
 print("--- 1. Raw ConsumptionHistory (Sept 10 - Oct 5, 2026) ---")
 # Using pandas to query the db for quick inspection
@@ -25,7 +25,7 @@ from fastapi.testclient import TestClient
 from app.main import app
 
 client = TestClient(app)
-resp = client.get("/anumaan/forecast?kitchen_id=K1_MainCampus&date=2026-09-22")
+resp = client.get("/andaza/forecast?kitchen_id=K1_MainCampus&date=2026-09-22")
 base_features = resp.json()['derived_features']
 
 # Now I'll call predict() using these base features. Wait, predict() requires the raw 13 inputs (PredictDemandRequest format), not the 47 derived features.

@@ -1,4 +1,4 @@
-date,day_of_week,is_weekend,kitchen_id,meal_type,category,unit,weather,is_festival,festival_name,promotion_flag,homepage_featured,discount_pct,unit_price,planned_production_qty,actual_consumption_qty,spoilage_qty,surplus_qty,lag_1d_consumption,lag_7d_avg_consumption,lag_14d_avg_consumption,historical_wastage_pct
+date,day_of_week,is_weekend,kitchen_id,meal_type,category,unit,weather,is_festival,festival_name,promotion_flag,homepage_featured,discount_pct,unit_price,planned_production_qty,actual_consumption_qty,spoilage_qty,rescue_qty,lag_1d_consumption,lag_7d_avg_consumption,lag_14d_avg_consumption,historical_wastage_pct
 2025-04-01,Tuesday,0,K1_MainCampus,Breakfast,Beverages,L,Cold,0,,0,0,0,20,214.11,185.17,7.88,21.07,0.0,0.0,0.0,0.0
 2025-04-02,Wednesday,0,K1_MainCampus,Breakfast,Beverages,L,Rainy,0,,0,0,0,20,212.28,186.21,6.41,19.66,185.17,185.17,185.17,0.042555489550143114
 2025-04-03,Thursday,0,K1_MainCampus,Breakfast,Beverages,L,Hot,0,,0,0,10,20,337.47,264.2,9.03,64.24,186.21,185.69,185.69,0.038478108675749904

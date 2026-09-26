@@ -23,7 +23,7 @@ SPOILAGE_RATES = {
     "Snacks": 0.02
 }
 
-# Anumaan does not output native confidence intervals (Poisson prediction).
+# Andaza does not output native confidence intervals (Poisson prediction).
 # MAE ~48.8 on a baseline of ~295 ≈ 16.5% relative error.
 # We use a SINGLE honestly-derived buffer tier: 1.2 * relative_error = 19.8% (0.198)
 # This is a conscious simplification from the originally planned multi-tier approach.

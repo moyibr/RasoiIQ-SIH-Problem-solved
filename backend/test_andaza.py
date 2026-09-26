@@ -1,8 +1,8 @@
 """
-test_anumaan.py  --  Standalone integration test for POST /anumaan/predict-demand
+test_andaza.py  --  Standalone integration test for POST /andaza/predict-demand
 
 Run from the backend/ folder (server must already be running):
-    python test_anumaan.py
+    python test_andaza.py
 
 What it does:
   1. Sends the canonical sample request from the spec.
@@ -18,7 +18,7 @@ import sys
 import httpx
 
 BASE_URL = "http://localhost:8000"
-ENDPOINT = f"{BASE_URL}/anumaan/predict-demand"
+ENDPOINT = f"{BASE_URL}/andaza/predict-demand"
 
 # ---------------------------------------------------------------------------
 # Sample request (from spec)
@@ -121,7 +121,7 @@ def show_feature_vector() -> None:
     sys.path.insert(0, os.path.dirname(__file__))
 
     try:
-        from app.services.anumaan import build_feature_vector, FEATURE_ORDER
+        from app.services.andaza import build_feature_vector, FEATURE_ORDER
     except ImportError as exc:
         print(f"Cannot import service locally: {exc}")
         return
@@ -140,7 +140,7 @@ def show_feature_vector() -> None:
 # ---------------------------------------------------------------------------
 
 if __name__ == "__main__":
-    print("Anumaan integration test")
+    print("Andaza integration test")
     print(f"Target: {ENDPOINT}")
 
     # Show feature vector first (offline, no server needed)

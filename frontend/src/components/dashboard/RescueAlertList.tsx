@@ -1,29 +1,29 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, SurplusEvent } from '@/lib/api';
+import { api, RescueEvent } from '@/lib/api';
 import Link from 'next/link';
 import clsx from 'clsx';
 import { Clock } from 'lucide-react';
 import SpotlightCard from '@/components/ui/SpotlightCard';
 
-export default function SurplusAlertList({ events: initialEvents }: { events: SurplusEvent[] }) {
-  const [events, setEvents] = useState<SurplusEvent[]>(initialEvents);
+export default function RescueAlertList({ events: initialEvents }: { events: RescueEvent[] }) {
+  const [events, setEvents] = useState<RescueEvent[]>(initialEvents);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     if (initialEvents.length === 0) {
       setLoading(true);
-      api.getSurplus('active').then(setEvents).finally(() => setLoading(false));
+      api.getRescue('active').then(setEvents).finally(() => setLoading(false));
     }
   }, [initialEvents]);
 
   const getUrgencyIndicator = (level: string) => {
     switch (level.toUpperCase()) {
-      case 'RED': return 'bg-status-critical shadow-[0_0_10px_rgba(217,86,74,0.8)] animate-pulse';
-      case 'AMBER': return 'bg-status-warning shadow-[0_0_10px_rgba(232,163,61,0.8)]';
+      case 'RED': return 'bg-status-critical shadow-sm animate-pulse';
+      case 'AMBER': return 'bg-status-warning shadow-sm';
       case 'GREEN': return 'bg-status-success';
-      default: return 'bg-ink-raised';
+      default: return 'bg-slate-100';
     }
   };
 
@@ -45,11 +45,11 @@ export default function SurplusAlertList({ events: initialEvents }: { events: Su
 
   return (
     <SpotlightCard className="p-8 shadow-2xl shadow-black/50 flex flex-col h-full">
-      <div className="flex items-center justify-between mb-6 pb-4 border-b border-white/5">
+      <div className="flex items-center justify-between mb-6 pb-4 border-b border-[#E2E8F0]">
         <h3 className="text-lg font-display text-content-primary uppercase tracking-wide flex items-center gap-3">
-          Active Surplus
+          Active Rescue
           {!loading && events.length > 0 && (
-            <span className="bg-black/30 text-accent-primary font-mono font-bold text-[10px] py-1 px-2 rounded-md border border-white/5">
+            <span className="bg-slate-50 text-accent-primary font-mono font-bold text-[10px] py-1 px-2 rounded-md border border-[#E2E8F0]">
               {events.length}
             </span>
           )}
@@ -60,11 +60,11 @@ export default function SurplusAlertList({ events: initialEvents }: { events: Su
         {loading ? (
           <div className="space-y-3">
             {[1, 2, 3].map((i) => (
-              <div key={i} className="h-20 bg-white/5 rounded-2xl animate-pulse border border-white/5"></div>
+              <div key={i} className="h-20 bg-slate-100 rounded-xl animate-pulse border border-[#E2E8F0]"></div>
             ))}
           </div>
         ) : events.length === 0 ? (
-          <p className="text-content-secondary text-sm font-mono text-center py-8">NO ACTIVE SURPLUS.</p>
+          <p className="text-content-secondary text-sm font-mono text-center py-8">NO ACTIVE RESCUE.</p>
         ) : (
           (() => {
             const active = events.filter(e => e.urgency_level.toUpperCase() !== 'EXPIRED')
@@ -76,15 +76,15 @@ export default function SurplusAlertList({ events: initialEvents }: { events: Su
             const isRed = event.urgency_level.toUpperCase() === 'RED';
             return (
               <div key={event.id} className={clsx(
-                'p-4 rounded-2xl border transition-all flex gap-4', 
-                isExpired ? 'opacity-40 border-white/5 bg-black/10' : 'bg-black/20 border-white/5 hover:bg-black/30'
+                'p-4 rounded-xl border transition-all flex gap-4', 
+                isExpired ? 'opacity-40 border-[#E2E8F0] bg-slate-50' : 'bg-slate-50 border-[#E2E8F0] hover:bg-slate-50'
               )}>
                 <div className="flex flex-col items-center gap-2 mt-1 shrink-0">
                   <div className={clsx('w-2 h-2 rounded-full', getUrgencyIndicator(event.urgency_level))} />
                 </div>
                 <div className="flex-1 min-w-0">
                   <div className="flex justify-between items-start mb-1">
-                    <p className={clsx('text-sm font-display font-bold truncate uppercase tracking-widest', isExpired ? 'text-content-secondary line-through' : 'text-content-primary')}>{event.category}</p>
+                    <p className={clsx('text-sm font-display font-bold truncate uppercase tracking-wide', isExpired ? 'text-content-secondary line-through' : 'text-content-primary')}>{event.category}</p>
                     <span className={clsx('font-mono font-bold whitespace-nowrap ml-2', isExpired ? 'text-content-secondary line-through' : 'text-accent-secondary')}>{event.quantity_kg} <span className="text-xs opacity-70">kg</span></span>
                   </div>
                   <p className="text-[11px] font-mono text-content-secondary truncate mb-3 uppercase tracking-wider">{event.kitchen_name}</p>
@@ -95,7 +95,7 @@ export default function SurplusAlertList({ events: initialEvents }: { events: Su
                       {isExpired ? 'EXPIRED' : formatTime(event.rescue_window_hours)}
                     </div>
                     {event.status && (
-                      <span className="font-mono text-[9px] font-bold uppercase tracking-widest text-content-secondary border border-white/10 bg-black/20 px-1.5 py-0.5 rounded-sm">
+                      <span className="font-mono text-[9px] font-bold uppercase tracking-wide text-content-secondary border border-[#E2E8F0] bg-slate-50 px-1.5 py-0.5 rounded-sm">
                         {event.status}
                       </span>
                     )}
@@ -107,7 +107,7 @@ export default function SurplusAlertList({ events: initialEvents }: { events: Su
         )}
       </div>
 
-      <Link href="/surplus" className="mt-6 text-center block text-[11px] font-display font-bold uppercase tracking-widest text-accent-secondary hover:text-white transition-colors">
+      <Link href="/rescue" className="mt-6 text-center block text-[11px] font-display font-bold uppercase tracking-wide text-accent-secondary hover:text-content-primary transition-colors">
         View All Alerts &rarr;
       </Link>
     </SpotlightCard>

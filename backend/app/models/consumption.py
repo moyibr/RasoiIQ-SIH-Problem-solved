@@ -17,7 +17,7 @@ class ConsumptionLog(Base):
 class ConsumptionHistory(Base):
     """
     Dedicated table to store historical daily customer counts for specific locations.
-    Used exclusively for deriving lag features (demand_yesterday, etc.) for Anumaan.
+    Used exclusively for deriving lag features (demand_yesterday, etc.) for Andaza.
     """
     __tablename__ = "consumption_history"
 

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { ForecastPoint } from '@/lib/api';
 import { ResponsiveContainer, ComposedChart, Line, Area, XAxis, YAxis, Tooltip, Legend, CartesianGrid } from 'recharts';
@@ -28,20 +28,20 @@ export default function ForecastChart({ data, category }: ForecastChartProps) {
       <div style={{ height: 350, width: '100%' }}>
         <ResponsiveContainer width="100%" height="100%">
           <ComposedChart data={formattedData} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
-            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#232B38" />
-            <XAxis dataKey="displayDate" stroke="#9AA3B2" fontSize={12} tickLine={false} axisLine={false} />
-            <YAxis stroke="#9AA3B2" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${val} kg`} />
+            <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#E2E8F0" />
+            <XAxis dataKey="displayDate" stroke="#64748B" fontSize={12} tickLine={false} axisLine={false} />
+            <YAxis stroke="#64748B" fontSize={12} tickLine={false} axisLine={false} tickFormatter={(val) => `${val} kg`} />
             <Tooltip 
-              contentStyle={{ backgroundColor: '#232B38', border: '1px solid #1B212B', borderRadius: '4px', color: '#F2F0EA' }}
-              itemStyle={{ color: '#F2F0EA' }}
+              contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0', borderRadius: '4px', color: '#0F172A' }}
+              itemStyle={{ color: '#0F172A' }}
               formatter={(value: number, name: string) => [`${value.toFixed(1)} kg`, name]}
             />
-            <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ color: '#9AA3B2', fontSize: '12px' }} />
+            <Legend verticalAlign="top" height={36} iconType="circle" wrapperStyle={{ color: '#64748B', fontSize: '12px' }} />
             
             <Line 
               type="monotone" 
               dataKey="confidence_upper" 
-              stroke="#4FB5C7" 
+              stroke="#16A34A" 
               strokeOpacity={0.3}
               strokeWidth={1}
               strokeDasharray="3 3"
@@ -52,7 +52,7 @@ export default function ForecastChart({ data, category }: ForecastChartProps) {
             <Line 
               type="monotone" 
               dataKey="confidence_lower" 
-              stroke="#4FB5C7" 
+              stroke="#16A34A" 
               strokeOpacity={0.3}
               strokeWidth={1}
               strokeDasharray="3 3"
@@ -63,7 +63,7 @@ export default function ForecastChart({ data, category }: ForecastChartProps) {
             <Line 
               type="monotone" 
               dataKey="predicted_kg" 
-              stroke="#4FB5C7" 
+              stroke="#16A34A" 
               strokeWidth={2} 
               dot={false} 
               name="Predicted Demand" 

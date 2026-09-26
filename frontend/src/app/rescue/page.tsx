@@ -1,8 +1,8 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { api, SurplusEvent, NGOMatch } from '@/lib/api';
-import NGOMatchList from '@/components/surplus/NGOMatchList';
+import { api, RescueEvent, NGOMatch } from '@/lib/api';
+import NGOMatchList from '@/components/rescue/NGOMatchList';
 import clsx from 'clsx';
 import { Clock } from 'lucide-react';
 
@@ -17,16 +17,16 @@ const categoryEmojis: Record<string, string> = {
   milk: '🥛'
 };
 
-export default function SurplusPage() {
-  const [events, setEvents] = useState<SurplusEvent[]>([]);
-  const [selectedEvent, setSelectedEvent] = useState<SurplusEvent | null>(null);
+export default function RescuePage() {
+  const [events, setEvents] = useState<RescueEvent[]>([]);
+  const [selectedEvent, setSelectedEvent] = useState<RescueEvent | null>(null);
   const [matches, setMatches] = useState<NGOMatch[]>([]);
   const [loadingEvents, setLoadingEvents] = useState(true);
   const [loadingMatches, setLoadingMatches] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    api.getSurplus('active')
+    api.getRescue('active')
       .then((data) => {
         const urgencyOrder: Record<string, number> = { critical: 0, high: 1, medium: 2, low: 3 };
         const sorted = [...data].sort((a, b) => 
@@ -38,7 +38,7 @@ export default function SurplusPage() {
       .finally(() => setLoadingEvents(false));
   }, []);
 
-  const handleSelectEvent = async (event: SurplusEvent) => {
+  const handleSelectEvent = async (event: RescueEvent) => {
     setSelectedEvent(event);
     setLoadingMatches(true);
     try {
@@ -58,8 +58,8 @@ export default function SurplusPage() {
       case 'RED': return 'bg-status-critical/10 text-status-critical border-status-critical/30';
       case 'AMBER': return 'bg-status-warning/10 text-status-warning border-status-warning/30';
       case 'GREEN': return 'bg-status-success/10 text-status-success border-status-success/30';
-      case 'EXPIRED': return 'bg-ink-raised text-content-secondary border-ink-raised';
-      default: return 'bg-ink-raised text-content-secondary border-ink-raised';
+      case 'EXPIRED': return 'bg-slate-100 text-content-secondary border-ink-raised';
+      default: return 'bg-slate-100 text-content-secondary border-ink-raised';
     }
   };
 
@@ -74,7 +74,7 @@ export default function SurplusPage() {
   return (
     <div className="p-8 h-screen flex flex-col max-w-7xl mx-auto">
       <div className="mb-6 shrink-0 border-b border-ink-raised pb-4">
-        <h1 className="text-3xl font-display font-bold text-content-primary">Surplus & Matching</h1>
+        <h1 className="text-3xl font-display font-bold text-content-primary mb-6">Rescue & Matching</h1>
         <p className="text-content-secondary mt-1 font-mono text-sm tracking-wide uppercase">Triage Queue &middot; Dispatch Control</p>
       </div>
 
@@ -85,12 +85,12 @@ export default function SurplusPage() {
       )}
 
       <div className="flex-1 min-h-0 flex flex-col lg:flex-row gap-6">
-        {/* Left Column: Surplus Events */}
+        {/* Left Column: Rescue Events */}
         <div className="w-full lg:w-1/2 flex flex-col h-[50vh] lg:h-full bg-ink-surface rounded-sm border border-ink-raised">
           <div className="p-4 border-b border-ink-raised">
             <h2 className="font-display font-bold text-content-primary tracking-wide uppercase flex items-center gap-2">
-              Active Surplus
-              <span className="bg-ink-raised text-accent-primary font-mono text-[10px] py-0.5 px-1.5 rounded-sm">
+              Active Rescue
+              <span className="bg-slate-100 text-accent-primary font-mono text-[10px] py-0.5 px-1.5 rounded-sm">
                 {events.length}
               </span>
             </h2>
@@ -100,11 +100,11 @@ export default function SurplusPage() {
             {loadingEvents ? (
               <div className="space-y-3">
                 {[1, 2, 3, 4].map(i => (
-                  <div key={i} className="h-24 bg-ink-raised rounded-sm animate-pulse"></div>
+                  <div key={i} className="h-24 bg-slate-100 rounded-sm animate-pulse"></div>
                 ))}
               </div>
             ) : events.length === 0 ? (
-              <p className="text-center text-content-secondary font-mono text-sm py-10 uppercase tracking-widest">No active surplus.</p>
+              <p className="text-center text-content-secondary font-mono text-sm py-10 uppercase tracking-wide">No active rescue.</p>
             ) : (
               events.map((event) => {
                 const isSelected = selectedEvent?.id === event.id;
@@ -118,16 +118,16 @@ export default function SurplusPage() {
                     className={clsx(
                       'p-4 rounded-sm border cursor-pointer transition-all flex gap-3',
                       isSelected 
-                        ? 'border-accent-primary bg-ink-raised shadow-[0_0_8px_rgba(232,163,61,0.2)]' 
+                        ? 'border-accent-primary bg-slate-100 shadow-sm' 
                         : isExpired ? 'border-ink-raised bg-ink-base opacity-50'
-                        : isRed ? 'border-status-critical/30 bg-ink-raised/50'
-                        : 'border-ink-raised bg-ink-surface hover:bg-ink-raised'
+                        : isRed ? 'border-status-critical/30 bg-slate-100/50'
+                        : 'border-ink-raised bg-ink-surface hover:bg-slate-100'
                     )}
                   >
                     <div className="flex flex-col items-center gap-2 mt-1 shrink-0">
                       <div className={clsx('w-2 h-2 rounded-full', 
                         isExpired ? 'bg-content-secondary' : 
-                        isRed ? 'bg-status-critical shadow-[0_0_8px_rgba(217,86,74,0.5)] animate-pulse' : 
+                        isRed ? 'bg-status-critical shadow-sm animate-pulse' : 
                         event.urgency_level.toUpperCase() === 'AMBER' ? 'bg-status-warning' : 'bg-status-success')} 
                       />
                     </div>
@@ -148,11 +148,11 @@ export default function SurplusPage() {
                       
                       <div className="flex items-center justify-between border-t border-ink-raised pt-2">
                         <div className="flex gap-2">
-                          <span className={clsx('text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 rounded-sm border', getUrgencyBadge(event.urgency_level))}>
+                          <span className={clsx('text-[10px] font-mono uppercase tracking-wide px-1.5 py-0.5 rounded-sm border', getUrgencyBadge(event.urgency_level))}>
                             {event.urgency_level}
                           </span>
                           {!isExpired && (
-                            <span className="text-[10px] font-mono uppercase tracking-widest px-1.5 py-0.5 bg-ink-raised text-content-secondary rounded-sm border border-ink-raised">
+                            <span className="text-[10px] font-mono uppercase tracking-wide px-1.5 py-0.5 bg-slate-100 text-content-secondary rounded-sm border border-ink-raised">
                               {event.status}
                             </span>
                           )}
@@ -174,7 +174,7 @@ export default function SurplusPage() {
 
           {/* Manual Entry Form */}
           <div className="p-4 border-t border-ink-raised bg-ink-base rounded-b-sm">
-            <h3 className="font-mono text-content-secondary mb-2 text-xs uppercase tracking-widest">Manual Entry Override</h3>
+            <h3 className="font-mono text-content-secondary mb-2 text-xs  tracking-wide">Manual Entry Override</h3>
             <form 
               className="flex flex-col gap-2"
               onSubmit={async (e) => {
@@ -184,7 +184,7 @@ export default function SurplusPage() {
                 const qty = parseFloat((form.elements.namedItem('quantity') as HTMLInputElement).value);
                 const hrs = parseFloat((form.elements.namedItem('hours') as HTMLInputElement).value);
                 try {
-                  await api.createManualSurplus({
+                  await api.createManualRescue({
                     kitchen_id: 1, // K1_MainCampus
                     category_name: cat,
                     quantity_kg: qty,
@@ -206,7 +206,7 @@ export default function SurplusPage() {
                 </select>
                 <input name="quantity" type="number" placeholder="Qty (kg)" step="0.1" required className="w-20 p-2 bg-ink-surface border border-ink-raised rounded-sm text-xs font-mono text-content-primary focus:border-accent-primary focus:outline-none" />
                 <input name="hours" type="number" placeholder="Hrs Left" step="0.5" required className="w-20 p-2 bg-ink-surface border border-ink-raised rounded-sm text-xs font-mono text-content-primary focus:border-accent-primary focus:outline-none" />
-                <button type="submit" className="bg-ink-raised text-accent-primary border border-accent-primary/50 hover:bg-accent-primary hover:text-ink-base px-3 py-1.5 rounded-sm text-xs font-mono uppercase tracking-widest transition-colors">Seed</button>
+                <button type="submit" className="bg-slate-100 text-accent-primary border border-accent-primary/50 hover:bg-accent-primary hover:text-white px-3 py-1.5 rounded-sm text-xs font-mono uppercase tracking-wide transition-colors">Seed</button>
               </div>
             </form>
           </div>
@@ -216,12 +216,12 @@ export default function SurplusPage() {
         <div className="w-full lg:w-1/2 flex flex-col h-[50vh] lg:h-full bg-ink-base rounded-sm border border-ink-raised">
           {!selectedEvent ? (
             <div className="flex-1 flex items-center justify-center">
-              <p className="text-content-secondary font-mono text-sm tracking-widest uppercase">Select an event to match</p>
+              <p className="text-content-secondary font-mono text-sm tracking-wide uppercase">Select an event to match</p>
             </div>
           ) : (
             <NGOMatchList 
               matches={matches} 
-              surplusEvent={selectedEvent} 
+              rescueEvent={selectedEvent} 
               isLoading={loadingMatches} 
             />
           )}

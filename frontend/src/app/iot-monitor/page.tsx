@@ -51,20 +51,20 @@ export default function IotMonitorPage() {
     <div className="p-8 max-w-6xl mx-auto space-y-8 animate-fade-in">
       <div className="flex justify-between items-start">
         <div>
-          <h1 className="text-3xl font-display font-bold text-white glow-text-primary">Processing Unit Monitor</h1>
+          <h1 className="text-3xl font-display font-bold text-content-primary mb-6">Processing Unit Monitor</h1>
           <div className="flex items-center gap-2 mt-2">
             <p className="text-content-secondary">IoT Sensor Dashboard</p>
-            <span className="text-[10px] font-mono tracking-widest uppercase bg-accent-secondary/20 text-accent-secondary px-2 py-0.5 rounded border border-accent-secondary/30">
+            <span className="text-[10px] font-mono tracking-wide uppercase bg-accent-secondary/20 text-accent-secondary px-2 py-0.5 rounded border border-accent-secondary/30">
               Simulator Enabled
             </span>
-            <span className="text-[10px] font-mono tracking-widest uppercase bg-ink-raised text-content-secondary px-2 py-0.5 rounded border border-white/5">
+            <span className="text-[10px] font-mono tracking-wide uppercase bg-slate-100 text-content-secondary px-2 py-0.5 rounded border border-[#E2E8F0]">
               Ingest API: POST /iot/ingest
             </span>
           </div>
         </div>
         <button 
           onClick={handleSimulate}
-          className="flex items-center gap-2 bg-white/10 hover:bg-white/20 border border-white/10 text-white font-medium py-2 px-4 rounded-xl transition-all"
+          className="flex items-center gap-2 bg-slate-200 hover:bg-white/20 border border-[#E2E8F0] text-content-primary font-medium py-2 px-4 rounded-xl transition-all"
         >
           <RefreshCw size={18} />
           Simulate Reading
@@ -72,53 +72,53 @@ export default function IotMonitorPage() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        <div className="glass-premium p-6 rounded-3xl border border-white/5 space-y-2">
+        <div className="glass-premium p-6 rounded-xl border border-[#E2E8F0] space-y-2">
           <div className="text-blue-400"><Thermometer size={24} /></div>
           <p className="text-content-secondary text-sm">Cold Storage Temp</p>
-          <p className="text-3xl font-bold text-white">{latest ? latest.temperature_c.toFixed(1) : '--'}°C</p>
+          <p className="text-3xl font-bold text-content-primary">{latest ? latest.temperature_c.toFixed(1) : '--'}°C</p>
           <p className="text-xs text-content-secondary">Target: 0°C - 5°C</p>
         </div>
-        <div className="glass-premium p-6 rounded-3xl border border-white/5 space-y-2">
+        <div className="glass-premium p-6 rounded-xl border border-[#E2E8F0] space-y-2">
           <div className="text-teal-400"><Droplets size={24} /></div>
           <p className="text-content-secondary text-sm">Humidity</p>
-          <p className="text-3xl font-bold text-white">{latest ? latest.humidity_pct.toFixed(1) : '--'}%</p>
+          <p className="text-3xl font-bold text-content-primary">{latest ? latest.humidity_pct.toFixed(1) : '--'}%</p>
           <p className="text-xs text-content-secondary">Target: &lt;85%</p>
         </div>
-        <div className="glass-premium p-6 rounded-3xl border border-white/5 space-y-2">
+        <div className="glass-premium p-6 rounded-xl border border-[#E2E8F0] space-y-2">
           <div className="text-status-warning"><Clock size={24} /></div>
           <p className="text-content-secondary text-sm">Machine Downtime</p>
-          <p className="text-3xl font-bold text-white">{latest ? latest.downtime_minutes.toFixed(0) : '--'} min</p>
+          <p className="text-3xl font-bold text-content-primary">{latest ? latest.downtime_minutes.toFixed(0) : '--'} min</p>
           <p className="text-xs text-content-secondary">Limit: &lt;15 min</p>
         </div>
-        <div className="glass-premium p-6 rounded-3xl border border-white/5 space-y-2">
+        <div className="glass-premium p-6 rounded-xl border border-[#E2E8F0] space-y-2">
           <div className="text-accent-primary"><Zap size={24} /></div>
           <p className="text-content-secondary text-sm">Energy Usage</p>
-          <p className="text-3xl font-bold text-white">{latest ? latest.energy_kwh.toFixed(1) : '--'} kWh</p>
+          <p className="text-3xl font-bold text-content-primary">{latest ? latest.energy_kwh.toFixed(1) : '--'} kWh</p>
           <p className="text-xs text-content-secondary">Normal: &lt;50 kWh</p>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-        <div className="lg:col-span-2 glass-premium p-6 rounded-3xl border border-white/5">
-          <h2 className="text-xl font-bold text-white mb-6">Live Telemetry (Last 20 Readings)</h2>
+        <div className="lg:col-span-2 glass-premium p-6 rounded-xl border border-[#E2E8F0]">
+          <h2 className="text-xl font-bold text-content-primary mb-6">Live Telemetry (Last 20 Readings)</h2>
           <div className="h-80 w-full">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={data}>
-                <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+                <CartesianGrid strokeDasharray="3 3" stroke="rgba(0,0,0,0.05)" />
                 <XAxis dataKey="time" stroke="#888" tick={{fontSize: 10}} />
                 <YAxis yAxisId="left" stroke="#60a5fa" />
-                <YAxis yAxisId="right" orientation="right" stroke="#e8a33d" />
-                <Tooltip contentStyle={{ backgroundColor: '#1a1a1a', border: '1px solid #333' }} />
+                <YAxis yAxisId="right" orientation="right" stroke="#D97706" />
+                <Tooltip contentStyle={{ backgroundColor: '#FFFFFF', border: '1px solid #E2E8F0' }} />
                 <Legend />
                 <Line yAxisId="left" type="monotone" dataKey="temperature_c" name="Temp (°C)" stroke="#60a5fa" strokeWidth={2} dot={false} />
-                <Line yAxisId="right" type="monotone" dataKey="energy_kwh" name="Energy (kWh)" stroke="#e8a33d" strokeWidth={2} dot={false} />
+                <Line yAxisId="right" type="monotone" dataKey="energy_kwh" name="Energy (kWh)" stroke="#D97706" strokeWidth={2} dot={false} />
               </LineChart>
             </ResponsiveContainer>
           </div>
         </div>
 
-        <div className="glass-premium p-6 rounded-3xl border border-white/5 flex flex-col">
-          <h2 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
+        <div className="glass-premium p-6 rounded-xl border border-[#E2E8F0] flex flex-col">
+          <h2 className="text-xl font-bold text-content-primary mb-4 flex items-center gap-2">
             <AlertTriangle className="text-status-critical" size={20} /> Active Alerts
           </h2>
           <div className="flex-1 overflow-y-auto space-y-3 pr-2">

@@ -139,7 +139,7 @@ export default function RouteMap({ route, ngos }: RouteMapProps) {
             'line-cap': 'round',
           },
           paint: {
-            'line-color': '#0d9488',
+            'line-color': '#16A34A',
             'line-width': 4,
             'line-dasharray': [2, 2],
           },

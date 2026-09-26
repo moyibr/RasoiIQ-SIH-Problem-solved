@@ -10,7 +10,7 @@ class DailyStat(BaseModel):
 class DashboardSummaryResponse(BaseModel):
     kg_rescued_today: float
     kg_wasted_today: float
-    active_surplus_count: int
+    active_rescue_count: int
     ngos_served_this_month: int
     forecast_accuracy_pct: float
     co2_saved_today_kg: float

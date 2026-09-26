@@ -38,7 +38,7 @@ const EXAMPLE: PredictDemandRequest = {
 
 // ─── Palette ─────────────────────────────────────────────────────────────────
 // ticket paper  #F4EFE6   aged ink     #1C1917   burner       #C2440E
-// steel         #4A5568   butcher paper #E8E0D0  chalk        #F9F7F4
+// steel         #4A5568   butcher paper #E2E8F0  chalk        #F9F7F4
 
 // ─── Validation ──────────────────────────────────────────────────────────────
 
@@ -66,7 +66,7 @@ function validate(f: PredictDemandRequest): FormErrors {
 function FieldError({ msg }: { msg?: string }) {
   if (!msg) return null;
   return (
-    <p className="flex items-center gap-1 mt-1 text-xs" style={{ color: '#E8A33D', textShadow: '0 0 10px rgba(232,163,61,0.5)' }}>
+    <p className="flex items-center gap-1 mt-1 text-xs" style={{ color: '#D97706', textShadow: '0 0 10px rgba(232,163,61,0.5)' }}>
       <AlertCircle size={10} /> {msg}
     </p>
   );
@@ -76,7 +76,7 @@ function DocketLabel({ children }: { children: React.ReactNode }) {
   return (
     <span
       className="block mb-1 text-xs tracking-wide"
-      style={{ color: '#9AA3B2', fontFamily: "var(--font-sans), sans-serif" }}
+      style={{ color: '#64748B', fontFamily: "var(--font-sans), sans-serif" }}
     >
       {children}
     </span>
@@ -92,13 +92,13 @@ function DocketInput({
       {...props}
       style={{
         width: '100%',
-        background: '#232B38',
-        border: '1px solid #3A4255',
+        background: '#FFFFFF',
+        border: '1px solid #E2E8F0',
         borderRadius: '3px',
         padding: '7px 10px',
         fontSize: '13px',
         fontFamily: "var(--font-mono), monospace",
-        color: '#F2F0EA',
+        color: '#0F172A',
         outline: 'none',
         ...props.style,
       }}
@@ -116,13 +116,13 @@ function DocketSelect({
       onChange={e => onChange(e.target.value)}
       style={{
         width: '100%',
-        background: '#232B38',
-        border: '1px solid #3A4255',
+        background: '#FFFFFF',
+        border: '1px solid #E2E8F0',
         borderRadius: '3px',
         padding: '7px 10px',
         fontSize: '13px',
         fontFamily: "var(--font-mono), monospace",
-        color: '#F2F0EA',
+        color: '#0F172A',
         outline: 'none',
         cursor: 'pointer',
         appearance: 'none',
@@ -146,12 +146,12 @@ function Toggle({
         justifyContent: 'space-between',
         width: '100%',
         padding: '8px 0',
-        background: '#14181F',
+        background: '#F8FAFC',
         border: 'none',
         cursor: 'pointer',
         fontFamily: "var(--font-sans), sans-serif",
         fontSize: '13px',
-        color: value === 1 ? '#F2F0EA' : '#9AA3B2',
+        color: value === 1 ? '#0F172A' : '#64748B',
       }}
     >
       <span>{label}</span>
@@ -161,7 +161,7 @@ function Toggle({
         width: '36px',
         height: '20px',
         borderRadius: '9999px',
-        background: value === 1 ? '#E8A33D' : '#232B38',
+        background: value === 1 ? '#D97706' : '#FFFFFF',
         flexShrink: 0,
         transition: 'background 200ms',
         overflow: 'hidden',
@@ -173,7 +173,7 @@ function Toggle({
           width: '16px',
           height: '16px',
           borderRadius: '9999px',
-          background: 'rgba(27, 33, 43, 0.4)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+          background: '#FFFFFF', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
           transition: 'left 200ms',
         }} />
       </span>
@@ -183,7 +183,7 @@ function Toggle({
 
 // Ruled divider between docket sections
 function Rule() {
-  return <div style={{ borderTop: '1px solid #E8E0D0', margin: '20px 0' }} />;
+  return <div style={{ borderTop: '1px solid #E2E8F0', margin: '20px 0' }} />;
 }
 
 // Section label (not all-caps eyebrow — small, steel-colored, sentence case)
@@ -193,7 +193,7 @@ function SectionLabel({ children }: { children: React.ReactNode }) {
       fontFamily: "var(--font-sans), sans-serif",
       fontSize: '11px',
       letterSpacing: '0.08em',
-      color: '#9AA3B2',
+      color: '#64748B',
       marginBottom: '14px',
       textTransform: 'uppercase',
     }}>
@@ -226,13 +226,13 @@ function pctDelta(predicted: number, baseline: number): string {
 }
 
 function deltaColor(predicted: number, baseline: number): string {
-  if (baseline === 0) return '#9AA3B2';
-  return predicted >= baseline ? '#6BAF8A' : '#E8A33D';
+  if (baseline === 0) return '#64748B';
+  return predicted >= baseline ? '#16A34A' : '#D97706';
 }
 
 // ─── Main page ────────────────────────────────────────────────────────────────
 
-export default function AnumaanPage() {
+export default function AndazaPage() {
   const [form, setForm] = useState<PredictDemandRequest>({
     locationId: 'Loc_1',
     date: tomorrowStr(),
@@ -283,8 +283,8 @@ export default function AnumaanPage() {
   const inputStyle: React.CSSProperties = {
     fontFamily: "var(--font-sans), sans-serif",
     minHeight: '100vh',
-    background: '#14181F',
-    color: '#F2F0EA',
+    background: '#F8FAFC',
+    color: '#0F172A',
   };
 
   return (
@@ -292,27 +292,27 @@ export default function AnumaanPage() {
       <div style={inputStyle}>
         {/* Page header */}
         <div style={{
-          borderBottom: '1px solid #E8E0D0',
+          borderBottom: '1px solid #E2E8F0',
           padding: '20px 32px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          background: 'rgba(27, 33, 43, 0.4)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+          background: '#FFFFFF', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
         }}>
           <div>
             <span style={{
               fontFamily: "var(--font-mono), monospace",
               fontSize: '18px',
               fontWeight: 600,
-              color: '#F2F0EA',
+              color: '#0F172A',
               letterSpacing: '-0.02em',
             }}>
-              Anumaan
+              ANYA Ai
             </span>
             <span style={{
               fontFamily: "var(--font-sans), sans-serif",
               fontSize: '13px',
-              color: '#9AA3B2',
+              color: '#64748B',
               marginLeft: '12px',
             }}>
               demand forecast
@@ -324,9 +324,9 @@ export default function AnumaanPage() {
             style={{
               fontFamily: "var(--font-sans), sans-serif",
               fontSize: '12px',
-              color: '#9AA3B2',
-              background: '#14181F',
-              border: '1px solid #E8E0D0',
+              color: '#64748B',
+              background: '#F8FAFC',
+              border: '1px solid #E2E8F0',
               borderRadius: '2px',
               padding: '5px 12px',
               cursor: 'pointer',
@@ -343,19 +343,19 @@ export default function AnumaanPage() {
           minHeight: 'calc(100vh - 61px)',
           alignItems: 'start',
         }}
-          className="anumaan-grid"
+          className="andaza-grid"
         >
           {/* ── LEFT: Docket ─────────────────────────────────────────────── */}
           <form
             onSubmit={handleSubmit}
             style={{
               padding: '32px',
-              borderRight: '1px solid #E8E0D0',
+              borderRight: '1px solid #E2E8F0',
             }}
           >
             {/* Single docket container — like a printed form */}
             <div style={{
-              background: 'rgba(27, 33, 43, 0.4)', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(255, 255, 255, 0.05)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+              background: '#FFFFFF', backdropFilter: 'blur(20px)', WebkitBackdropFilter: 'blur(20px)', border: '1px solid rgba(0,0,0,0.05)', boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
               borderRadius: '24px',
               padding: '28px',
               maxWidth: '640px',
@@ -366,14 +366,14 @@ export default function AnumaanPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
                   <DocketLabel>Location</DocketLabel>
-                  <DocketSelect id="anumaan-location" value={form.locationId} onChange={v => setField('locationId', v)}>
+                  <DocketSelect id="andaza-location" value={form.locationId} onChange={v => setField('locationId', v)}>
                     {LOCATIONS.map(l => <option key={l} value={l}>{l}</option>)}
                   </DocketSelect>
                   <FieldError msg={errors.locationId} />
                 </div>
                 <div>
                   <DocketLabel>Date</DocketLabel>
-                  <DocketInput id="anumaan-date" type="date" value={form.date}
+                  <DocketInput id="andaza-date" type="date" value={form.date}
                     onChange={e => setField('date', e.target.value)} />
                   <FieldError msg={errors.date} />
                 </div>
@@ -386,21 +386,21 @@ export default function AnumaanPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
                 <div>
                   <DocketLabel>Yesterday</DocketLabel>
-                  <DocketInput id="anumaan-demand-yesterday" type="number" min="0" step="1"
+                  <DocketInput id="andaza-demand-yesterday" type="number" min="0" step="1"
                     value={form.demandYesterday}
                     onChange={e => setField('demandYesterday', parseFloat(e.target.value) || 0)} />
                   <FieldError msg={errors.demandYesterday} />
                 </div>
                 <div>
                   <DocketLabel>Same day last week</DocketLabel>
-                  <DocketInput id="anumaan-demand-7d" type="number" min="0" step="1"
+                  <DocketInput id="andaza-demand-7d" type="number" min="0" step="1"
                     value={form.demand7DaysAgo}
                     onChange={e => setField('demand7DaysAgo', parseFloat(e.target.value) || 0)} />
                   <FieldError msg={errors.demand7DaysAgo} />
                 </div>
                 <div>
                   <DocketLabel>7-day rolling avg</DocketLabel>
-                  <DocketInput id="anumaan-demand-ma7" type="number" min="0" step="0.1"
+                  <DocketInput id="andaza-demand-ma7" type="number" min="0" step="0.1"
                     value={form.demandMa7}
                     onChange={e => setField('demandMa7', parseFloat(e.target.value) || 0)} />
                   <FieldError msg={errors.demandMa7} />
@@ -425,14 +425,14 @@ export default function AnumaanPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                 <div>
                   <DocketLabel>Temperature (°C)</DocketLabel>
-                  <DocketInput id="anumaan-temp" type="number" step="0.1" min="-20" max="60"
+                  <DocketInput id="andaza-temp" type="number" step="0.1" min="-20" max="60"
                     value={form.tempCelsius}
                     onChange={e => setField('tempCelsius', parseFloat(e.target.value) || 0)} />
                   <FieldError msg={errors.tempCelsius} />
                 </div>
                 <div>
                   <DocketLabel>Rainfall (mm)</DocketLabel>
-                  <DocketInput id="anumaan-rain" type="number" step="0.1" min="0"
+                  <DocketInput id="andaza-rain" type="number" step="0.1" min="0"
                     value={form.rainMm}
                     onChange={e => setField('rainMm', parseFloat(e.target.value) || 0)} />
                   <FieldError msg={errors.rainMm} />
@@ -446,21 +446,21 @@ export default function AnumaanPage() {
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
                 <div>
                   <DocketLabel>CPI index</DocketLabel>
-                  <DocketInput id="anumaan-cpi" type="number" step="0.01" min="0.01"
+                  <DocketInput id="andaza-cpi" type="number" step="0.01" min="0.01"
                     value={form.cpiIndex}
                     onChange={e => setField('cpiIndex', parseFloat(e.target.value) || 0)} />
                   <FieldError msg={errors.cpiIndex} />
                 </div>
                 <div>
                   <DocketLabel>Online rating</DocketLabel>
-                  <DocketInput id="anumaan-rating" type="number" step="0.1" min="1.0" max="5.0"
+                  <DocketInput id="andaza-rating" type="number" step="0.1" min="1.0" max="5.0"
                     value={form.onlineRating}
                     onChange={e => setField('onlineRating', parseFloat(e.target.value) || 1)} />
                   <FieldError msg={errors.onlineRating} />
                 </div>
                 <div>
                   <DocketLabel>Reservations</DocketLabel>
-                  <DocketInput id="anumaan-reservations" type="number" step="1" min="0"
+                  <DocketInput id="andaza-reservations" type="number" step="1" min="0"
                     value={form.reservations}
                     onChange={e => setField('reservations', parseInt(e.target.value) || 0)} />
                   <FieldError msg={errors.reservations} />
@@ -470,23 +470,23 @@ export default function AnumaanPage() {
               {/* Submit */}
               <div style={{ marginTop: '28px' }}>
                 <motion.button
-                  id="anumaan-submit"
+                  id="andaza-submit"
                   type="submit"
                   disabled={loading}
                   whileHover={!loading ? { scale: 1.01 } : {}}
                   whileTap={!loading ? { scale: 0.98 } : {}}
                   className={clsx(
-                    "relative w-full py-5 text-[15px] font-display font-bold tracking-wide uppercase transition-all rounded-2xl overflow-hidden",
+                    "relative w-full py-5 text-[15px] font-display font-bold tracking-wide uppercase transition-all rounded-xl overflow-hidden",
                     loading 
-                      ? "bg-ink-raised text-content-secondary" 
-                      : "bg-accent-primary text-ink-base glow-button-primary"
+                      ? "bg-slate-100 text-content-secondary" 
+                      : "bg-accent-primary text-white glow-button-primary"
                   )}
                 >
                   {!loading && <div className="absolute inset-0 bg-white/20 -translate-x-full hover:animate-[shimmer_1s_infinite] skew-x-12" />}
                   <span className="relative z-10 flex items-center justify-center gap-2">
                     {loading
                       ? <><Loader2 size={15} className="animate-spin" /> Running model…</>
-                      : 'Run Anumaan'}
+                      : 'Run ANYA Ai'}
                   </span>
                 </motion.button>
 
@@ -494,10 +494,10 @@ export default function AnumaanPage() {
                   <div style={{
                     marginTop: '12px',
                     padding: '10px 14px',
-                    background: '#FEF2F0',
-                    border: '1px solid #F5C6B8',
+                    background: '#FEF2F2',
+                    border: '1px solid #FCA5A5',
                     borderRadius: '3px',
-                    color: '#E8A33D', textShadow: '0 0 10px rgba(232,163,61,0.5)',
+                    color: '#D97706', textShadow: '0 0 10px rgba(232,163,61,0.5)',
                     fontSize: '13px',
                     fontFamily: "var(--font-sans), sans-serif",
                     display: 'flex',
@@ -515,7 +515,7 @@ export default function AnumaanPage() {
           {/* ── RIGHT: KDS result panel ───────────────────────────────────── */}
           <div
             ref={resultRef}
-            className="anumaan-kds"
+            className="andaza-kds"
             style={{
               background: 'transparent',
               minHeight: 'calc(100vh - 61px)',
@@ -535,7 +535,7 @@ export default function AnumaanPage() {
                 <p style={{
                   fontFamily: "var(--font-mono), monospace",
                   fontSize: '13px',
-                  color: '#9AA3B2',
+                  color: '#64748B',
                   lineHeight: 1.6,
                 }}>
                   Fill in the docket<br />and run the model.
@@ -546,11 +546,11 @@ export default function AnumaanPage() {
             {/* Loading state */}
             {loading && (
               <div style={{ textAlign: 'center' }}>
-                <Loader2 size={24} style={{ color: '#E8A33D', textShadow: '0 0 10px rgba(232,163,61,0.5)', animation: 'spin 1s linear infinite' }} />
+                <Loader2 size={24} style={{ color: '#D97706', textShadow: '0 0 10px rgba(232,163,61,0.5)', animation: 'spin 1s linear infinite' }} />
                 <p style={{
                   fontFamily: "var(--font-mono), monospace",
                   fontSize: '12px',
-                  color: '#9AA3B2',
+                  color: '#64748B',
                   marginTop: '12px',
                 }}>
                   reading the model…
@@ -560,12 +560,12 @@ export default function AnumaanPage() {
 
             {/* Result */}
             {result && !loading && (
-              <div className="anumaan-result-enter" style={{ width: '100%' }}>
+              <div className="andaza-result-enter" style={{ width: '100%' }}>
                 {/* Location + date context */}
                 <p style={{
                   fontFamily: "var(--font-mono), monospace",
                   fontSize: '11px',
-                  color: '#9AA3B2',
+                  color: '#64748B',
                   letterSpacing: '0.08em',
                   marginBottom: '24px',
                 }}>
@@ -578,7 +578,7 @@ export default function AnumaanPage() {
                     fontFamily: "var(--font-mono), monospace",
                     fontSize: '96px', textShadow: '0 0 30px rgba(255,255,255,0.3)',
                     fontWeight: 600,
-                    color: '#F2F0EA',
+                    color: '#0F172A',
                     lineHeight: 1,
                     letterSpacing: '-0.04em',
                   }}>
@@ -588,7 +588,7 @@ export default function AnumaanPage() {
                 <p style={{
                   fontFamily: "var(--font-sans), sans-serif",
                   fontSize: '12px',
-                  color: '#9AA3B2',
+                  color: '#64748B',
                   marginBottom: '36px',
                 }}>
                   estimated covers
@@ -596,7 +596,7 @@ export default function AnumaanPage() {
 
                 {/* Two deltas */}
                 <div style={{
-                  borderTop: '1px solid #2C2521',
+                  borderTop: '1px solid #E2E8F0',
                   paddingTop: '24px',
                   display: 'flex',
                   flexDirection: 'column',
@@ -607,7 +607,7 @@ export default function AnumaanPage() {
                     <span style={{
                       fontFamily: "var(--font-mono), monospace",
                       fontSize: '12px',
-                      color: '#9AA3B2',
+                      color: '#64748B',
                     }}>
                       vs. yesterday ({form.demandYesterday})
                     </span>
@@ -626,7 +626,7 @@ export default function AnumaanPage() {
                     <span style={{
                       fontFamily: "var(--font-mono), monospace",
                       fontSize: '12px',
-                      color: '#9AA3B2',
+                      color: '#64748B',
                     }}>
                       vs. same day last week ({form.demand7DaysAgo})
                     </span>
@@ -645,13 +645,13 @@ export default function AnumaanPage() {
                 {result.recommended_production !== null && (
                   <div style={{
                     marginTop: '32px',
-                    borderTop: '1px solid #2C2521',
+                    borderTop: '1px solid #E2E8F0',
                     paddingTop: '20px',
                   }}>
                     <p style={{
                       fontFamily: "var(--font-mono), monospace",
                       fontSize: '11px',
-                      color: '#9AA3B2',
+                      color: '#64748B',
                       marginBottom: '4px',
                     }}>
                       recommended production
@@ -660,15 +660,15 @@ export default function AnumaanPage() {
                       fontFamily: "var(--font-mono), monospace",
                       fontSize: '28px',
                       fontWeight: 600,
-                      color: '#F2F0EA',
+                      color: '#0F172A',
                     }}>
                       {result.recommended_production}
                     </p>
                   </div>
                 )}
 
-                {/* "What Anumaan considered" accordion */}
-                <div style={{ marginTop: '36px', borderTop: '1px solid #2C2521' }}>
+                {/* "What ANYA Ai considered" accordion */}
+                <div style={{ marginTop: '36px', borderTop: '1px solid #E2E8F0' }}>
                   <button
                     type="button"
                     onClick={() => setShowDetails(v => !v)}
@@ -678,24 +678,24 @@ export default function AnumaanPage() {
                       justifyContent: 'space-between',
                       alignItems: 'center',
                       padding: '16px 0',
-                      background: '#14181F',
+                      background: '#F8FAFC',
                       border: 'none',
                       cursor: 'pointer',
                       fontFamily: "var(--font-mono), monospace",
                       fontSize: '11px',
-                      color: '#9AA3B2',
+                      color: '#64748B',
                       letterSpacing: '0.04em',
                     }}
                   >
-                    <span>What Anumaan considered</span>
+                    <span>What ANYA Ai considered</span>
                     {showDetails
-                      ? <ChevronUp size={13} style={{ color: '#9AA3B2' }} />
-                      : <ChevronDown size={13} style={{ color: '#9AA3B2' }} />}
+                      ? <ChevronUp size={13} style={{ color: '#64748B' }} />
+                      : <ChevronDown size={13} style={{ color: '#64748B' }} />}
                   </button>
 
                   {showDetails && (
                     <div style={{
-                      borderTop: '1px solid #2C2521',
+                      borderTop: '1px solid #E2E8F0',
                       paddingTop: '16px',
                       display: 'grid',
                       gridTemplateColumns: '1fr 1fr',
@@ -706,12 +706,12 @@ export default function AnumaanPage() {
                           <span style={{
                             fontFamily: "var(--font-mono), monospace",
                             fontSize: '10px',
-                            color: '#F2F0EA',
+                            color: '#0F172A',
                           }}>{k}</span>
                           <span style={{
                             fontFamily: "var(--font-mono), monospace",
                             fontSize: '10px',
-                            color: '#9AA3B2',
+                            color: '#64748B',
                             marginLeft: '8px',
                           }}>
                             {typeof v === 'number' ? v.toFixed(3) : v}

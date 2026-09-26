@@ -104,13 +104,13 @@ y_test = y.loc[test_mask]
 
 
 # ==========================================
-# LOAD TRAINED ANUMAAN MODEL
+# LOAD TRAINED ANDAZA MODEL
 # ==========================================
 
 model = xgb.XGBRegressor()
 
 model.load_model(
-    "models/Anumaan_xgb_poisson.json"
+    "models/Andaza_xgb_poisson.json"
 )
 
 print("Model loaded successfully.")
@@ -139,7 +139,7 @@ shap.summary_plot(
     show=False
 )
 
-plt.title("Anumaan - SHAP Feature Importance")
+plt.title("Andaza - SHAP Feature Importance")
 plt.tight_layout()
 
 plt.savefig(
@@ -166,7 +166,7 @@ shap.dependence_plot(
     show=False
 )
 
-plt.title("Anumaan - Temperature Impact on Demand")
+plt.title("Andaza - Temperature Impact on Demand")
 plt.tight_layout()
 
 plt.savefig(

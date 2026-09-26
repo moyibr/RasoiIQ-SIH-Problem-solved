@@ -6,7 +6,7 @@ class Delivery(Base):
     __tablename__ = "deliveries"
 
     id = Column(Integer, primary_key=True, index=True)
-    surplus_event_id = Column(Integer, ForeignKey("surplus_events.id"))
+    rescue_event_id = Column(Integer, ForeignKey("rescue_events.id"))
     ngo_id = Column(Integer, ForeignKey("ngos.id"))
     status = Column(String(20))
     route_waypoints = Column(JSON)

@@ -16,7 +16,7 @@ Meal weight assumption:
           for institutional kitchens (breakfast: ~0.3kg, lunch: ~0.5kg average).
 
 Forecast performance:
-  MAE = 48.8 customers/day (from Anumaan model test evaluation).
+  MAE = 48.8 customers/day (from Andaza model test evaluation).
   MAPE: not stored; exposed as null.
   Mean daily demand (training set) = 295 customers used as denominator
   for relative error only. We expose MAE directly, NOT a derived "accuracy %".
@@ -31,7 +31,7 @@ from typing import Dict, Any, List, Optional
 from sqlalchemy.orm import Session
 from sqlalchemy import func as sqlfunc
 
-from app.models.surplus import SurplusEvent
+from app.models.rescue import RescueEvent
 from app.models.food_category import FoodCategory
 from app.models.processing_unit import ProcessingUnitLog
 
@@ -43,8 +43,8 @@ CO2E_FACTOR_KG_PER_KG = 2.5
 MEAL_WEIGHT_KG = 0.4
 # Assumption: average institutional meal weight per serving (FSSAI guidance)
 
-ANUMAAN_MAE = 48.8
-# Anumaan model test-set MAE: 48.8 customers/day (validated in Phase 2a verification)
+ANDAZA_MAE = 48.8
+# Andaza model test-set MAE: 48.8 customers/day (validated in Phase 2a verification)
 # Reference baseline demand: ~295 customers/day (training-set mean)
 
 
@@ -62,28 +62,28 @@ def aggregate_sustainability_metrics(
     start_dt = datetime.datetime.combine(start_date, datetime.time.min)
     end_dt = datetime.datetime.combine(end_date, datetime.time.max)
 
-    # ── Surplus rescued (DELIVERED or MATCHED status = rescued) ──────────────
-    rescued_events = db.query(SurplusEvent).filter(
-        SurplusEvent.status.in_(["DELIVERED", "MATCHED"]),
-        SurplusEvent.detected_at >= start_dt,
-        SurplusEvent.detected_at <= end_dt,
+    # ── Rescue rescued (DELIVERED or MATCHED status = rescued) ──────────────
+    rescued_events = db.query(RescueEvent).filter(
+        RescueEvent.status.in_(["DELIVERED", "MATCHED"]),
+        RescueEvent.detected_at >= start_dt,
+        RescueEvent.detected_at <= end_dt,
     ).all()
     kg_rescued = sum(e.quantity_kg for e in rescued_events) if rescued_events else 0
 
-    # ── Surplus wasted / expired ─────────────────────────────────────────────
-    expired_events = db.query(SurplusEvent).filter(
-        SurplusEvent.status == "EXPIRED",
-        SurplusEvent.detected_at >= start_dt,
-        SurplusEvent.detected_at <= end_dt,
+    # ── Rescue wasted / expired ─────────────────────────────────────────────
+    expired_events = db.query(RescueEvent).filter(
+        RescueEvent.status == "EXPIRED",
+        RescueEvent.detected_at >= start_dt,
+        RescueEvent.detected_at <= end_dt,
     ).all()
     kg_wasted = sum(e.quantity_kg for e in expired_events) if expired_events else 0
 
-    # ── Total surplus detected ───────────────────────────────────────────────
-    all_events = db.query(SurplusEvent).filter(
-        SurplusEvent.detected_at >= start_dt,
-        SurplusEvent.detected_at <= end_dt,
+    # ── Total rescue detected ───────────────────────────────────────────────
+    all_events = db.query(RescueEvent).filter(
+        RescueEvent.detected_at >= start_dt,
+        RescueEvent.detected_at <= end_dt,
     ).all()
-    total_surplus_events = len(all_events)
+    total_rescue_events = len(all_events)
 
     # ── CO2e avoided ────────────────────────────────────────────────────────
     co2e_avoided_kg = round(kg_rescued * CO2E_FACTOR_KG_PER_KG, 2)
@@ -93,15 +93,15 @@ def aggregate_sustainability_metrics(
 
     # ── Top 3 most-wasted food categories ───────────────────────────────────
     top_wasted_raw = (
-        db.query(FoodCategory.name, sqlfunc.sum(SurplusEvent.quantity_kg).label("total_wasted"))
-        .join(SurplusEvent, SurplusEvent.category_id == FoodCategory.id)
+        db.query(FoodCategory.name, sqlfunc.sum(RescueEvent.quantity_kg).label("total_wasted"))
+        .join(RescueEvent, RescueEvent.category_id == FoodCategory.id)
         .filter(
-            SurplusEvent.status == "EXPIRED",
-            SurplusEvent.detected_at >= start_dt,
-            SurplusEvent.detected_at <= end_dt,
+            RescueEvent.status == "EXPIRED",
+            RescueEvent.detected_at >= start_dt,
+            RescueEvent.detected_at <= end_dt,
         )
         .group_by(FoodCategory.name)
-        .order_by(sqlfunc.sum(SurplusEvent.quantity_kg).desc())
+        .order_by(sqlfunc.sum(RescueEvent.quantity_kg).desc())
         .limit(3)
         .all()
     )
@@ -133,7 +133,7 @@ def aggregate_sustainability_metrics(
 
     # ── Data availability flags (null vs zero) ───────────────────────────────
     # The DB query successfully ran, so this is a legitimate 0, not "unavailable".
-    surplus_data_available = True
+    rescue_data_available = True
 
     return {
         # ── Provenance metadata ──────────────────────────────────────────────
@@ -142,14 +142,14 @@ def aggregate_sustainability_metrics(
             "period_end": end_date.isoformat(),
             "is_synthetic_data": True,
             "synthetic_note": (
-                "Kitchen surplus data is synthetic, generated for system demonstration. "
+                "Kitchen rescue data is synthetic, generated for system demonstration. "
                 "Processing unit data sourced from processing_unit_dataset_v3_verified.csv."
             ),
-            "surplus_data_available": surplus_data_available,
+            "rescue_data_available": rescue_data_available,
         },
-        # ── Kitchen surplus metrics ──────────────────────────────────────────
-        "surplus": {
-            "total_events_detected": total_surplus_events,
+        # ── Kitchen rescue metrics ──────────────────────────────────────────
+        "rescue": {
+            "total_events_detected": total_rescue_events,
             "kg_rescued": round(float(kg_rescued), 2),
             "kg_wasted_expired": round(float(kg_wasted), 2),
             "rescue_rate_pct": (
@@ -172,8 +172,8 @@ def aggregate_sustainability_metrics(
         "top_wasted_categories": top_wasted_categories,
         # ── Forecast performance ─────────────────────────────────────────────
         "forecast_performance": {
-            "model": "Anumaan (XGBoost Poisson)",
-            "mae_customers_per_day": ANUMAAN_MAE,
+            "model": "Andaza (XGBoost Poisson)",
+            "mae_customers_per_day": ANDAZA_MAE,
             "mape": None,  # Not stored; genuinely unavailable
             "note": (
                 "MAE = 48.8 customers/day on held-out test set (Phase 2a verification). "

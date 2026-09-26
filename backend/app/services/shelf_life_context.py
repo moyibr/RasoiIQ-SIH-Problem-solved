@@ -13,9 +13,15 @@ SHELF_LIFE_HOURS = {
     "Snacks": 12.0
 }
 
-def calculate_urgency(category: str, batch_created_at: datetime):
+def calculate_urgency(category: str, batch_created_at):
     now = datetime.now(timezone.utc)
-    if batch_created_at.tzinfo is None:
+
+    # Rows seeded before batch_created_at existed, or created outside the normal
+    # ingest path, can carry a NULL timestamp. Treat those as brand-new batches
+    # rather than crashing the request.
+    if batch_created_at is None:
+        batch_created_at = now
+    elif batch_created_at.tzinfo is None:
         batch_created_at = batch_created_at.replace(tzinfo=timezone.utc)
         
     shelf_life = SHELF_LIFE_HOURS.get(category, 24.0)

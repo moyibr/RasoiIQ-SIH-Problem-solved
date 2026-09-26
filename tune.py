@@ -359,7 +359,7 @@ import os
 
 os.makedirs("models", exist_ok=True)
 
-model_path = "models/anumaan_xgb_poisson.json"
+model_path = "models/andaza_xgb_poisson.json"
 
 tuned_model.save_model(model_path)
 

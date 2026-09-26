@@ -9,9 +9,9 @@ from app.models.food_category import FoodCategory
 from app.models.inventory import InventoryLog
 from app.models.kitchen import Kitchen
 from app.models.production import ProductionLog, FoodConsumptionLog
-from app.models.surplus import SurplusEvent
+from app.models.rescue import RescueEvent
 from app.services.production_context import get_conversion_rate, get_spoilage_rate, FIXED_BUFFER_PCT
-from app.routers.anumaan import auto_forecast
+from app.routers.andaza import auto_forecast
 
 router = APIRouter()
 
@@ -34,8 +34,8 @@ class ProductionPlanResponse(BaseModel):
 @router.get("/production-plan/generate", response_model=ProductionPlanResponse)
 def generate_production_plan(kitchen_id: str, date: date_type, db: Session = Depends(get_db)):
     try:
-        anumaan_res = auto_forecast(kitchen_id=kitchen_id, date=str(date))
-        predicted_customers = anumaan_res.predicted_customers
+        andaza_res = auto_forecast(kitchen_id=kitchen_id, date=str(date))
+        predicted_customers = andaza_res.predicted_customers
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Failed to get forecast: {str(e)}")
     
@@ -120,7 +120,7 @@ def log_consumption(req: LogConsumptionRequest, db: Session = Depends(get_db)):
     
     planned_qty = plog.planned_kg if plog else 0.0
     spoilage = get_spoilage_rate(cat.name) * planned_qty
-    surplus_qty = max(0.0, planned_qty - req.consumed_qty - spoilage)
+    rescue_qty = max(0.0, planned_qty - req.consumed_qty - spoilage)
     
     # Upsert FoodConsumptionLog
     clog = db.query(FoodConsumptionLog).filter(
@@ -134,21 +134,21 @@ def log_consumption(req: LogConsumptionRequest, db: Session = Depends(get_db)):
         clog = FoodConsumptionLog(kitchen_id=kid, category_id=cat.id, date=req.date, consumed_qty=req.consumed_qty)
         db.add(clog)
         
-    # Auto-generate SurplusEvent
-    if surplus_qty > 0.0:
-        existing_se = db.query(SurplusEvent).filter(
-            SurplusEvent.kitchen_id == kid,
-            SurplusEvent.category_id == cat.id,
-            SurplusEvent.batch_created_at >= datetime.combine(req.date, datetime.min.time()).replace(tzinfo=timezone.utc)
+    # Auto-generate RescueEvent
+    if rescue_qty > 0.0:
+        existing_se = db.query(RescueEvent).filter(
+            RescueEvent.kitchen_id == kid,
+            RescueEvent.category_id == cat.id,
+            RescueEvent.batch_created_at >= datetime.combine(req.date, datetime.min.time()).replace(tzinfo=timezone.utc)
         ).first()
         
         if existing_se:
-            existing_se.quantity_kg = surplus_qty
+            existing_se.quantity_kg = rescue_qty
         else:
-            se = SurplusEvent(
+            se = RescueEvent(
                 kitchen_id=kid,
                 category_id=cat.id,
-                quantity_kg=surplus_qty,
+                quantity_kg=rescue_qty,
                 batch_created_at=datetime.combine(req.date, datetime.min.time()).replace(tzinfo=timezone.utc),
                 expiry_at=datetime.combine(req.date, datetime.min.time()).replace(tzinfo=timezone.utc) + timedelta(hours=cat.shelf_life_hours if cat.shelf_life_hours else 24),
                 urgency_level="HIGH" if cat.shelf_life_hours and cat.shelf_life_hours <= 12 else "MEDIUM",
@@ -158,7 +158,7 @@ def log_consumption(req: LogConsumptionRequest, db: Session = Depends(get_db)):
             db.add(se)
 
     db.commit()
-    return {"status": "success", "surplus_calculated": surplus_qty}
+    return {"status": "success", "rescue_calculated": rescue_qty}
 
 @router.post("/replay-consumption")
 def replay_consumption(kitchen_id: str, date: date_type, db: Session = Depends(get_db)):

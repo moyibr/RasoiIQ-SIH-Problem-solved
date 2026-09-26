@@ -15,4 +15,4 @@ class NGOMatchResponse(BaseModel):
     lng: float
 
 class MatchRequest(BaseModel):
-    surplus_event_id: int
+    rescue_event_id: int

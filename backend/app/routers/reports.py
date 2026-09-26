@@ -4,7 +4,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from app.services.sustainability_aggregator import aggregate_sustainability_metrics
 from app.services.llm_service import generate_narrative
-from app.models.surplus import SurplusEvent
+from app.models.rescue import RescueEvent
 from sqlalchemy import func
 import calendar
 
@@ -60,17 +60,17 @@ def sustainability_report(
             "period_start": start_date.isoformat(),
             "period_end": end_date.isoformat(),
             "sources": [
-                "surplus_events table (SQLite, seed data)",
+                "rescue_events table (SQLite, seed data)",
                 "processing_unit_logs table (processing_unit_dataset_v3_verified.csv)",
             ],
             "documented_assumptions": {
                 "co2e_factor": "2.5 kg CO2e/kg — FAO (2013) Food Wastage Footprint",
                 "meal_weight_kg": "0.4 kg/meal — FSSAI institutional portion guidance (stated assumption)",
-                "forecast_mae": "48.8 customers/day — Anumaan model test-set evaluation (Phase 2a)",
+                "forecast_mae": "48.8 customers/day — Andaza model test-set evaluation (Phase 2a)",
             },
             "is_synthetic_data": True,
             "synthetic_note": (
-                "All kitchen surplus data is synthetic, generated for system demonstration. "
+                "All kitchen rescue data is synthetic, generated for system demonstration. "
                 "Processing unit data sourced from processing_unit_dataset_v3_verified.csv."
             ),
         },
@@ -87,8 +87,8 @@ def get_esg_analytics(db: Session = Depends(get_db)):
     COST_PER_KG = 50.0 # Estimated cost saved per kg
 
     # All time stats
-    saved_events = db.query(SurplusEvent).filter(SurplusEvent.status.in_(['DELIVERED', 'MATCHED'])).all()
-    wasted_events = db.query(SurplusEvent).filter(SurplusEvent.status == 'EXPIRED').all()
+    saved_events = db.query(RescueEvent).filter(RescueEvent.status.in_(['DELIVERED', 'MATCHED'])).all()
+    wasted_events = db.query(RescueEvent).filter(RescueEvent.status == 'EXPIRED').all()
     
     kg_saved = sum(e.quantity_kg for e in saved_events)
     kg_wasted = sum(e.quantity_kg for e in wasted_events)

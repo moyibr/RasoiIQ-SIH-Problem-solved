@@ -172,7 +172,7 @@ for day_index, d in enumerate(dates):
                 spoilage_rate = rng.uniform(SPOILAGE_MIN, SPOILAGE_MAX)
                 spoilage_qty = planned_production * spoilage_rate
 
-                surplus_qty = max(
+                rescue_qty = max(
                     0.0, planned_production - actual_consumption - spoilage_qty
                 )
 
@@ -194,7 +194,7 @@ for day_index, d in enumerate(dates):
                     "planned_production_qty": round(planned_production, 2),
                     "actual_consumption_qty": round(actual_consumption, 2),
                     "spoilage_qty": round(spoilage_qty, 2),
-                    "surplus_qty": round(surplus_qty, 2),
+                    "rescue_qty": round(rescue_qty, 2),
                 })
 
 df = pd.DataFrame(rows)

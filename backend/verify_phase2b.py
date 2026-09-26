@@ -20,7 +20,7 @@ if resp_plan.status_code == 200:
 else:
     print("Error generating plan:", resp_plan.text)
 
-print("\n--- 2. Call /log-consumption and assert SurplusEvent is created ---")
+print("\n--- 2. Call /log-consumption and assert RescueEvent is created ---")
 resp_log1 = client.post("/log-consumption", json={
     "kitchen_id": kitchen,
     "date": date_test,
@@ -43,6 +43,6 @@ for cat in plan['categories']:
     rate = cat['predicted_qty'] / cat['predicted_customers']
     print(f"{cat['category_name']}: Rate={rate:.3f}, Qty={cat['predicted_qty']}")
 
-print("\n--- 5. Assert absence of /calculate-surplus route ---")
-resp_404 = client.post("/calculate-surplus")
-print("Status for /calculate-surplus:", resp_404.status_code)
+print("\n--- 5. Assert absence of /calculate-rescue route ---")
+resp_404 = client.post("/calculate-rescue")
+print("Status for /calculate-rescue:", resp_404.status_code)

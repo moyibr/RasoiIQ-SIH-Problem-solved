@@ -14,12 +14,16 @@ engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 from app.database import Base
+# Import the whole models package so every table/foreign key is registered on
+# Base.metadata before create_all() runs. Importing models one-by-one leaves
+# FK targets (e.g. rescue_events -> users) unresolved and create_all() raises.
+import app.models  # noqa: F401
 from app.models.kitchen import Kitchen
 from app.models.food_category import FoodCategory
 from app.models.ngo import NGO
 from app.models.consumption import ConsumptionLog
 from app.models.production import ProductionLog
-from app.models.surplus import SurplusEvent
+from app.models.rescue import RescueEvent
 from app.models.sustainability import SustainabilityMetric
 
 def seed_data():
@@ -122,7 +126,7 @@ def seed_data():
                     session.add(plog)
                     
                     if actual > qty + 1.0:
-                        surplus_qty = actual - qty
+                        rescue_qty = actual - qty
                         sl = cat.shelf_life_hours
                         urgency = 'critical' if sl <= 4 else ('high' if sl <= 6 else ('medium' if sl <= 8 else 'low'))
                         status = 'delivered' if (end_date - curr_date).days > 1 else 'pending'
@@ -130,14 +134,14 @@ def seed_data():
                         event_time = datetime.datetime.combine(curr_date, datetime.time(14 if meal=='lunch' else (20 if meal=='dinner' else 10)))
                         expiry_time = event_time + datetime.timedelta(hours=sl)
                         
-                        sev = SurplusEvent(kitchen_id=kitchen.id, category_id=cat.id, quantity_kg=surplus_qty, urgency_level=urgency, status=status, detected_at=event_time, expiry_at=expiry_time)
+                        sev = RescueEvent(kitchen_id=kitchen.id, category_id=cat.id, quantity_kg=rescue_qty, urgency_level=urgency, status=status, detected_at=event_time, batch_created_at=event_time, expiry_at=expiry_time)
                         session.add(sev)
                         total_sur += 1
                         
                         if status == 'delivered':
-                            daily_rescued += surplus_qty
+                            daily_rescued += rescue_qty
                         else:
-                            daily_wasted += surplus_qty
+                            daily_wasted += rescue_qty
 
             session.commit()
             
@@ -153,7 +157,7 @@ def seed_data():
                 session.add(sm)
             session.commit()
 
-        print(f"Seeded: 1 kitchens, 5 ngos, {total_con} consumption records, {total_sur} surplus events")
+        print(f"Seeded: 1 kitchens, 5 ngos, {total_con} consumption records, {total_sur} rescue events")
     
     except Exception as e:
         session.rollback()
